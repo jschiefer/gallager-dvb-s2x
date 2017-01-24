@@ -54,3 +54,6 @@ RUN chown ${TheUser}:${TheUser} ${PyBOMBS_init}
 
 # Switch user
 USER ${TheUser}
+
+# Start VNC server
+CMD vncserver :1 -geometry 1280x1024 -depth 24 && tail -F /root/.vnc/*.log
