@@ -37,10 +37,10 @@ RUN pybombs recipes add p4g-toys git+https://github.com/jschiefer/p4g-toys.git
 RUN pybombs prefix init ${PyBOMBS_init} -a ${PyBOMBS_prefix}
 RUN echo "source "${PyBOMBS_init}"/setup_env.sh" >> .bashrc
 RUN pybombs -p ${PyBOMBS_prefix} -v install "uhd" && rm -rf ${PyBOMBS_init}/src/*
-RUN pybombs -p ${PyBOMBS_prefix} -v install --deps-only "gnuradio" && rm -rf ${PyBOMBS_init}/src/*
-RUN pybombs -p ${PyBOMBS_prefix} -v install --no-deps "gnuradio" && rm -rf ${PyBOMBS_init}/src/*
 RUN pybombs -p ${PyBOMBS_prefix} -v install "gr-osmosdr" && rm -rf ${PyBOMBS_init}/src/*
 RUN pybombs -p ${PyBOMBS_prefix} -v install "rtl-sdr" && rm -rf ${PyBOMBS_init}/src/*
+RUN pybombs -p ${PyBOMBS_prefix} -v install --deps-only "gnuradio" && rm -rf ${PyBOMBS_init}/src/*
+RUN pybombs -p ${PyBOMBS_prefix} -v install --no-deps "gnuradio" && rm -rf ${PyBOMBS_init}/src/*
 RUN pybombs -p ${PyBOMBS_prefix} -v install "my-dvbs2" && rm -rf ${PyBOMBS_init}/src/*
 
 # Install LXDE and VNC server
