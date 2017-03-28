@@ -7,17 +7,37 @@ blocks. The image is based on Ubuntu 14.04.
 
 Build container
 -------------
-To build the container, clone this repository and build a docker image from it:
+To build the container, clone this repository, change directory into to `docker-p4g` and build the docker image from it:
 ```
-$ docker build -t p4g --squash .
+$ docker build -t p4g:0.6 .
 ```
-This will create the image, which you should be able to see in your image list using
+This will create an image with the name p4g and the version tag 0.6, which you should be able to see 
+in your image list:
 ```
 $ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+p4g                 0.6                 271950d2732a        8 weeks ago         2.47 GB
+ubuntu              14.04               b969ab9f929b        2 months ago        188 MB
+
 ```
 
 Run container
 -------------
+
+Now that we have this image, let's create a container from it and run it 
+interactively using the `docker run` command. It is considered a best 
+practice to consider docker containers ephemeral, i.e. we are not going to 
+preserve any state inside the container, and destroy all evidence after 
+it is done running.
+
+There are a few more things we want to do with this:
+
+- Map a local directory, so it is visible inside the container. This is done with
+  the `-v` option.
+- Allow access to external devices, e.g. your SDR hardware. This requires
+  `--privileged`.
+- Run a vnc server inside the container, so we can get a GUI out of it. The command
+  to run this is added to the very end of our lengthy command line. 
 
 You can adjust the mapped VNC server port with altering the argument
 '-p 5901:PORT' and the screen size with changing the '-geometry WIDTHxHEIGHT'
@@ -28,21 +48,22 @@ You will be asked to set a password for the access via VNC.
 Start a container, using the image that we just built:
 
 ```
-$ docker run -it --rm --privileged -p 5901:5901 -e USER=amsat p4g bash
+$ docker run -it --rm --privileged -p 5901:5901 -e USER=amsat -v ~/Docker:/home/amsat/Docker p4g:0.6 /bin/bash -c "vncserver :1 -geometry 1280x800 -depth 24 && tail -F /root/.vnc/*.log"
 ```
 
 This starts the VNC server in the image and exposes it on port 5901. Prileged access is
-required in order to access external devices.
+required in order to access external devices. As it the server starts, it will make 
+you set a password.
 
 Connect via VNC client
 ----------------------
 
 I assume that you are running the container on the same machine you are
 running the VNC client. Then you can connect via the ip address
-'localhost:5901'. For example using vncviewer:
+'localhost:5901'. For example using vinagre:
 
 ```
-$ vncviewer localhost:5901
+$ vinagre localhost:5901
 ```
 
 Run GNU Radio Companion

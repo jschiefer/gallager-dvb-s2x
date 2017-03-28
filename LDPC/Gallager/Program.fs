@@ -45,9 +45,9 @@ let DvbS2Modcods = [
     { PlsCode = 6uy; LdpcRate = (2, 3); Modulation = M_QPSK };
     { PlsCode = 7uy; LdpcRate = (3, 4); Modulation = M_QPSK };
     { PlsCode = 8uy; LdpcRate = (4, 5); Modulation = M_QPSK };
-    { PlsCode = 9uy; LdpcRate = (1, 4); Modulation = M_QPSK };
-    { PlsCode = 10uy; LdpcRate = (5, 6); Modulation = M_QPSK };
-    { PlsCode = 11uy; LdpcRate = (8, 9); Modulation = M_QPSK };
+    { PlsCode = 9uy; LdpcRate = (5, 6); Modulation = M_QPSK };
+    { PlsCode = 10uy; LdpcRate = (8, 9); Modulation = M_QPSK };
+    { PlsCode = 11uy; LdpcRate = (9, 10); Modulation = M_QPSK };
     { PlsCode = 12uy; LdpcRate = (3, 5); Modulation = M_8PSK };
     { PlsCode = 13uy; LdpcRate = (2, 3); Modulation = M_8PSK };
     { PlsCode = 14uy; LdpcRate = (3, 4); Modulation = M_8PSK };
