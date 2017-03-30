@@ -6,7 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Program.fs" />
+    <Compile Include="DvbS2.fs" />
+    <Compile Include="Decoder.fs" />
   </ItemGroup>
 
   <ItemGroup>
