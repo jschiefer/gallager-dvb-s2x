@@ -16,14 +16,14 @@ let bitsPerFrame = function
 
 type Modulation = 
     | M_QPSK                // S2 5.4.1
-//  | M_8PSK                // S2 5.4.2
-//  | M_16APSK_4_12         // S2 5.4.3
-//  | M_32APSK_4_12_16      // S2 5.4.4
+    | M_8PSK                // S2 5.4.2
+    | M_16APSK_4_12         // S2 5.4.3
+    | M_32APSK_4_12_16      // S2 5.4.4
 
 let constellation = function
      | M_QPSK -> 
         let s = 1.0 / sqrt(2.0) 
-        [| new Complex(s, s); new Complex(s, -s); new Complex(-s, s); new Complex(-s, -s) |]
+        [| Complex(s, s); Complex(s, -s); Complex(-s, s); Complex(-s, -s) |]
 
 let bitsPerSymbol modulation = 
     let log2 x = log10 x  / log10 2.0 
@@ -47,7 +47,6 @@ let DvbS2Modcods = [
     { PlsCode = 9uy; LdpcRate = (5, 6); Modulation = M_QPSK };
     { PlsCode = 10uy; LdpcRate = (8, 9); Modulation = M_QPSK };
     { PlsCode = 11uy; LdpcRate = (9, 10); Modulation = M_QPSK };
-(*
     { PlsCode = 12uy; LdpcRate = (3, 5); Modulation = M_8PSK };
     { PlsCode = 13uy; LdpcRate = (2, 3); Modulation = M_8PSK };
     { PlsCode = 14uy; LdpcRate = (3, 4); Modulation = M_8PSK };
@@ -65,7 +64,6 @@ let DvbS2Modcods = [
     { PlsCode = 26uy; LdpcRate = (5, 6); Modulation = M_32APSK_4_12_16 };
     { PlsCode = 27uy; LdpcRate = (8, 9); Modulation = M_32APSK_4_12_16 };
     { PlsCode = 28uy; LdpcRate = (9, 10); Modulation = M_32APSK_4_12_16 };
-*)
 ]
 
 // Parity bit accumulator table, 1/2 rate, long frames
