@@ -2,4 +2,4 @@
 open Hamstr.Ldpc.DvbS2
 
 bitsPerSymbol M_QPSK
-ldpc_1_2_l |> Seq.length 
+ldpc_1_2_l |> Seq.length
