@@ -4,16 +4,9 @@ open System
 open System.IO
 open System.Numerics
 open Hamstr.Ldpc.DvbS2
+open Hamstr.Demod
 
-let bitsPerSymbol modulation = 
-    let log2 x = Math.Log(x, 2.0)
-    modulation |> constellation |> Array.length |> float |> log2 |> int32
-
-let demodulateSymbol modulation (samples:seq<Complex>) = 
-    let c = constellation modulation
-    printfn "%A" samples
-    [ 0uy ]
-
-let decode (rate : int * int) (frame : byte[]) =
+/// LDPC-decode the frame (which is an array of tuples of bit and LLR)
+let decode (rate : int * int) (frame : array<(byte * float)>) =
     let parityTable = findParityTable rate
-    ()
+    [ 0uy; 0uy ]

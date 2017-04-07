@@ -4,6 +4,7 @@ open System
 open System.IO
 open System.Numerics
 open Hamstr.Ldpc.DvbS2
+open Hamstr.Demod
 open Hamstr.Ldpc.Decoder
 
 type FileType = 
@@ -20,9 +21,7 @@ let readComplexNumber (reader:BinaryReader) =
     Complex(float real, float imaginary)
 
 let readSymbol reader modulation = 
-    [ 1 .. bitsPerSymbol modulation ]
-    |> List.map (fun _ -> readComplexNumber reader)
-    |> demodulateSymbol modulation
+    readComplexNumber reader |> demodulateSymbol modulation
 
 let readFrame fileType frametype modulation reader =
     match fileType with
@@ -31,7 +30,7 @@ let readFrame fileType frametype modulation reader =
         |> List.collect (fun _ -> readSymbol reader modulation)
     | BitFile ->
         [ 1 .. bitsPerFrame frametype ] 
-        |> List.map (fun _ -> reader.ReadByte())
+        |> List.map (fun _ -> (reader.ReadByte(), 1.0))
 
 let readTestFile fileType fileName frameType modulation =
     use stream = File.OpenRead(fileName)
