@@ -1,26 +1,19 @@
-﻿module Hamstr.Decoder
+﻿module Hamstr.Ldpc.Decoder
 
 open System
 open System.IO
+open System.Numerics
 open Hamstr.Ldpc.DvbS2
 
-let testDataFileName = "../Data/qpsk_testdata.out"
-let bitFileName = "../Data/qpsk_testdata.bits"
+let bitsPerSymbol modulation = 
+    let log2 x = Math.Log(x, 2.0)
+    modulation |> constellation |> Array.length |> float |> log2 |> int32
 
-let readFrame frametype modulation stream =
-    let nBits = bitsPerFrame frametype
-    let bps = bitsPerSymbol modulation
+let demodulateSymbol modulation (samples:seq<Complex>) = 
+    let c = constellation modulation
+    printfn "%A" samples
+    [ 0uy ]
+
+let decode (rate : int * int) (frame : byte[]) =
+    let parityTable = findParityTable rate
     ()
-
-let readLongQpskFrame stream = readFrame Long M_QPSK stream
-
-let readTestFile fileName =
-    use stream = File.OpenRead(fileName)
-    use reader = new StreamReader(stream)
-    let frame = readLongQpskFrame reader
-    frame
-
-[<EntryPoint>]
-let main argv =
-    let frame = readTestFile testDataFileName
-    0 // return an integer exit code

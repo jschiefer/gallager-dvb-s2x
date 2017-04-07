@@ -8,6 +8,7 @@
   <ItemGroup>
     <Compile Include="DvbS2.fs" />
     <Compile Include="Decoder.fs" />
+    <Compile Include="Main.fs" />
   </ItemGroup>
 
   <ItemGroup>
