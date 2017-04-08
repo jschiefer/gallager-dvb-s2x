@@ -12,16 +12,16 @@ let bitsPerSymbol modulation =
 /// Compute the square of the distance between z and z'
 let distanceSquare (z : Complex) (z' : Complex) = 
     let diff = z - z'
-    Complex (diff.Real * diff.Real, diff.Imaginary * diff.Imaginary)
+    diff.Real * diff.Real + diff.Imaginary * diff.Imaginary
 
 /// Does x have a bit set to 1 at position n (starting from 0)?
 let hasOneBitAtPosition n x = x &&& (1 <<< n) <> 0
 
-/// Map the received symbol to the closest point in the constellation. Also compute LLR.
+/// Map the received symbol to the nearest point in the constellation. Also compute LLR.
 let demodulateSymbol modulation (signal : Complex) = 
     let distances = 
         constellation modulation
-        |> Array.map (fun s -> (distanceSquare signal))
+        |> Array.mapi (fun i s -> (distanceSquare s signal, i))
+    let smallest = distances |> Array.sort |> Array.head
     
-
     [ (0uy, 1.0) ]
