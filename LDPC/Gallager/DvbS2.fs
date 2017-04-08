@@ -29,7 +29,7 @@ type Modulation =
 
 /// Constellation mapping for each type of modulation.
 /// They are in order, i.e. the index into the array is the value of the symbol.
-let constellation = function
+let getConstellation = function
      | M_QPSK -> 
         let s = 1.0 / sqrt(2.0) 
         [| Complex(s, s); Complex(s, -s); Complex(-s, s); Complex(-s, -s) |]
