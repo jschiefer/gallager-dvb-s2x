@@ -18,10 +18,11 @@ let bitFileName = "../Data/qpsk_testdata.bits"
 let readComplexNumber (reader:BinaryReader) = 
     let real = reader.ReadSingle()
     let imaginary = reader.ReadSingle()
+    printfn "read %A %A" real imaginary
     Complex(float real, float imaginary)
 
 let readSymbol reader modulation = 
-    let noiseVariance = Complex(0.25, 0.25)
+    let noiseVariance = 0.2
     readComplexNumber reader |> demodulateSymbol noiseVariance modulation
 
 let readFrame fileType frametype modulation reader =
@@ -31,7 +32,7 @@ let readFrame fileType frametype modulation reader =
         |> Seq.collect (fun _ -> readSymbol reader modulation)
     | BitFile ->
         [ 1 .. bitsPerFrame frametype ] 
-        |> Seq.map (fun _ -> (reader.ReadByte(), Complex.One))
+        |> Seq.map (fun _ -> (reader.ReadByte(), 0.0))
 
 let readTestFile fileType fileName frameType modulation =
     use stream = File.OpenRead(fileName)
@@ -45,6 +46,10 @@ let main argv =
     let frame = readTestFile IqFile iqDataFileName Long modcod.Modulation 
     let referenceFrame = readTestFile BitFile bitFileName Long modcod.Modulation 
 
-    let result = decode (1, 2) frame
-    printfn "%A %d" frame frame.Length
+    let foo = frame |> List.compareWith (fun a b -> if fst a = fst b then 0 else 1) referenceFrame
+
+    // printfn "Foo is %d" foo
+    // let result = decode (1, 2) frame
+    printfn "%A" frame
+    printfn "%A" referenceFrame
     0 // return an integer exit code

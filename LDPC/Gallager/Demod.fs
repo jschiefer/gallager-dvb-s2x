@@ -10,7 +10,7 @@ let bitsPerSymbol modulation =
     modulation |> getConstellation |> Array.length |> float |> log2 |> int32
 
 /// Map the received signal to the nearest point in the constellation and compute LLR.
-let demodulateSymbol (noiseVariance : Complex) (modulation : Modulation) (signal : Complex) = 
+let demodulateSymbol (noiseVariance : float) (modulation : Modulation) (signal : Complex) = 
 
     /// Compute the square of the distance between z and z'
     let magSquared (z : Complex) (z' : Complex) = 
@@ -19,10 +19,10 @@ let demodulateSymbol (noiseVariance : Complex) (modulation : Modulation) (signal
 
     // Compute distances to all ideal constellation points
     let constellation = modulation |> getConstellation
-    let distances = constellation |> Array.mapi (fun label point -> (label, magSquared point signal))
-
-    // The one with the smallest distance is our output symbol
-    let symbol = distances |> Array.sortBy (fun (_, d) -> d) |> Array.head |> fst
+    let errors = constellation |> Array.mapi (fun label point -> (label, magSquared point signal))
+    
+    // The one with the smallest error is our output symbol
+    let symbol = errors |> Array.sortBy (fun (_, d) -> d) |> Array.head |> fst
     
     // Extract bit number n from x (starting at 0)
     let extractBit (x : int) (n : int32) = 
@@ -31,19 +31,19 @@ let demodulateSymbol (noiseVariance : Complex) (modulation : Modulation) (signal
 
     let computeExactLlr n = 
             
-        let addDistance (s0, s1) (n, (constellationPoint, (distance : float))) = 
+        let accumulateError (s0, s1) (n, (constellationPoint, (error : float))) = 
             // Add, according to whether the bit at index n is in S0 or S1
             let constellationBit = extractBit constellationPoint n
-            let contribution = Complex.Exp(Complex(-1.0 * distance, 0.0) / noiseVariance)
+            let contribution = exp(error) / noiseVariance
             match constellationBit with
             | 0uy -> (s0 + contribution, s1)
             | _ -> (s0, s1 + contribution)
 
         let bit = extractBit symbol n
         let (s0, s1) =
-            distances 
+            errors 
             |> Seq.map (fun d -> (n, d))
-            |> Seq.fold addDistance  (Complex.Zero, Complex.Zero)
+            |> Seq.fold accumulateError  (0.0, 0.0)
         let llr = log(s0 / s1)
         (bit, llr)
 
