@@ -28,7 +28,8 @@ let readSymbol reader modulation =
 let readFrame fileType frametype modulation reader =
     match fileType with
     | IqFile ->
-        [ 1 .. bitsPerFrame frametype ] 
+        let nSamplesToRead = bitsPerFrame frametype / bitsPerSymbol modulation
+        [ 1 .. nSamplesToRead ] 
         |> Seq.collect (fun _ -> readSymbol reader modulation)
     | BitFile ->
         [ 1 .. bitsPerFrame frametype ] 
@@ -43,8 +44,8 @@ let readTestFile fileType fileName frameType modulation =
 [<EntryPoint>]
 let main argv =
     let modcod = ModCodLookup.[testPls]
-    let frame = readTestFile IqFile iqDataFileName Long modcod.Modulation 
-    let referenceFrame = readTestFile BitFile bitFileName Long modcod.Modulation 
+    let frame = readTestFile IqFile iqDataFileName Test modcod.Modulation 
+    let referenceFrame = readTestFile BitFile bitFileName Test modcod.Modulation 
 
     let foo = frame |> List.compareWith (fun a b -> if fst a = fst b then 0 else 1) referenceFrame
 

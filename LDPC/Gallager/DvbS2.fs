@@ -10,11 +10,13 @@ type LdpcRate = int * int
 type FECFRAME = 
     | Short 
     | Long
+    | Test
 
 /// This is how long frames are (in bits)
 let bitsPerFrame = function
     | Short ->  16200
     | Long ->   64800
+    | Test -> 16
 
 /// Modulation types allowed for DVB-S2. DVB-S2X has a bunch more (not yet implemented).
 type Modulation = 
