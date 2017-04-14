@@ -34,7 +34,7 @@ let demodulateSymbol (noiseVariance : float) (modulation : Modulation) (signal :
         let accumulateError (s0, s1) (n, (constellationPoint, (error : float))) = 
             // Add, according to whether the bit at index n is in S0 or S1
             let constellationBit = extractBit constellationPoint n
-            let contribution = exp(error) / noiseVariance
+            let contribution = exp(-1.0 * error / noiseVariance)
             match constellationBit with
             | 0uy -> (s0 + contribution, s1)
             | _ -> (s0, s1 + contribution)
