@@ -18,7 +18,6 @@ let bitFileName = "../Data/qpsk_testdata.bits"
 let readComplexNumber (reader:BinaryReader) = 
     let real = reader.ReadSingle()
     let imaginary = reader.ReadSingle()
-    printfn "read %A %A" real imaginary
     Complex(float real, float imaginary)
 
 let readSymbol reader modulation = 
@@ -41,16 +40,20 @@ let readTestFile fileType fileName frameType modulation =
     readFrame fileType frameType modulation reader 
     |> List.ofSeq
 
+let checkForBitErrors referenceFrame frame =
+    let comparer a b =
+        if fst a = fst b then 0 else 1
+
+    let foo = frame |> List.compareWith comparer referenceFrame
+    ()
+
+
 [<EntryPoint>]
 let main argv =
+    let frameType = Long
     let modcod = ModCodLookup.[testPls]
-    let frame = readTestFile IqFile iqDataFileName Test modcod.Modulation 
-    let referenceFrame = readTestFile BitFile bitFileName Test modcod.Modulation 
+    let frame = readTestFile IqFile iqDataFileName frameType modcod.Modulation 
+    let referenceFrame = readTestFile BitFile bitFileName frameType modcod.Modulation 
+    let decodedFrame = decode (1, 2) frame
 
-    let foo = frame |> List.compareWith (fun a b -> if fst a = fst b then 0 else 1) referenceFrame
-
-    // printfn "Foo is %d" foo
-    // let result = decode (1, 2) frame
-    printfn "%A" frame
-    printfn "%A" referenceFrame
-    0 // return an integer exit code
+    0

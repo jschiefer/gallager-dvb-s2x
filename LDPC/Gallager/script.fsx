@@ -12,7 +12,5 @@ let sym =
         Complex(-0.56793886423111, -0.883610665798187) 
     ]
 
-let demod = demodulateSymbol (new Complex(0.25, 0.25)) M_QPSK 
-
-demod sym.[0]
-
+let s = 1.0 / sqrt(2.0)
+demodulateSymbol 0.02 M_QPSK (new Complex(s, s))
