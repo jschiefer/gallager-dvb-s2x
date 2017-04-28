@@ -14,3 +14,13 @@ let sym =
 
 let s = 1.0 / sqrt(2.0)
 demodulateSymbol 0.02 M_QPSK (new Complex(s, s))
+
+
+/// Create a list of check nodes for bit node at index b
+let checkNodes b = ()
+
+/// Create a list of bit nodes for the check node at index c
+let bitNodes c = ()
+
+let pt = findParityTable (1, 2)
+
