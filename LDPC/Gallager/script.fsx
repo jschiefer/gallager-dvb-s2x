@@ -13,3 +13,4 @@ let bitNodes c = ()
 
 let (pt, q) = findLongParityTable Rate_1_2
 
+let newFrame = Array.create 64800 List.empty<int>

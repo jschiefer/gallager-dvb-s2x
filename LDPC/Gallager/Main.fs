@@ -54,7 +54,7 @@ let checkForBitErrors referenceFrame frame =
 
 [<EntryPoint>]
 let main argv =
-    let frameLength = bitsPerFrame.Long |> int32
+    let frameLength = BitsPerFrame.Long |> int32
     let modcod = ModCodLookup.[testPls]
     let frame = readTestFile IqFile iqDataFileName frameLength modcod.Modulation 
     let referenceFrame = readTestFile BitFile bitFileName frameLength modcod.Modulation 

@@ -16,20 +16,57 @@ type LdpcCode =
     | Rate_8_9
     | Rate_9_10
 
+/// Coding parameters, as per secion 5.3, tables 5
+type CodingTableEntry = {
+    KBch : int      // BCH Uncoded block kBch
+    KLdpc : int     // BCH coded block nBch, LDPC Uncoded Block kLdpc
+    BchTError : int // BCH t-error correction
+    NLdpc : int     // LDPC Coded Block nLdpc
+}
+
+let longCodingTable = 
+    [
+        ( Rate_1_4, { KBch = 16008; KLdpc = 16200; BchTError = 12; NLdpc = 64800 } )
+        ( Rate_1_3, { KBch = 21408; KLdpc = 21600; BchTError = 12; NLdpc = 64800 } )
+        ( Rate_2_5, { KBch = 25728; KLdpc = 25920; BchTError = 12; NLdpc = 64800 } )
+        ( Rate_1_2, { KBch = 32208; KLdpc = 32400; BchTError = 12; NLdpc = 64800 } )
+        ( Rate_3_5, { KBch = 38688; KLdpc = 38880; BchTError = 12; NLdpc = 64800 } )
+        ( Rate_2_3, { KBch = 43040; KLdpc = 43200; BchTError = 10; NLdpc = 64800 } )
+        ( Rate_3_4, { KBch = 48408; KLdpc = 48600; BchTError = 12; NLdpc = 64800 } )
+        ( Rate_4_5, { KBch = 51648; KLdpc = 51840; BchTError = 12; NLdpc = 64800 } )
+        ( Rate_5_6, { KBch = 53840; KLdpc = 54000; BchTError = 10; NLdpc = 64800 } )
+        ( Rate_8_9, { KBch = 57472; KLdpc = 57600; BchTError = 8; NLdpc = 64800 } )
+        ( Rate_9_10, { KBch = 58192; KLdpc = 58320; BchTError = 8; NLdpc = 64800 } )
+    ] |> Map.ofList
+
+let shortCodingTable = 
+    [
+        ( Rate_1_4, { KBch = 3072; KLdpc = 3240; BchTError = 12; NLdpc = 16200 } )
+        ( Rate_1_3, { KBch = 5232; KLdpc = 5400; BchTError = 12; NLdpc = 16200 } )
+        ( Rate_2_5, { KBch = 6312; KLdpc = 6480; BchTError = 12; NLdpc = 16200 } )
+        ( Rate_1_2, { KBch = 7032; KLdpc = 7200; BchTError = 12; NLdpc = 16200 } )
+        ( Rate_3_5, { KBch = 9552; KLdpc = 9720; BchTError = 12; NLdpc = 16200 } )
+        ( Rate_2_3, { KBch = 10632; KLdpc = 10800; BchTError = 12; NLdpc = 16200 } )
+        ( Rate_3_4, { KBch = 11712; KLdpc = 11880; BchTError = 12; NLdpc = 16200 } )
+        ( Rate_4_5, { KBch = 12432; KLdpc = 12600; BchTError = 12; NLdpc = 16200 } )
+        ( Rate_5_6, { KBch = 13152; KLdpc = 13320; BchTError = 12; NLdpc = 16200 } )
+        ( Rate_8_9, { KBch = 14232; KLdpc = 14400; BchTError = 12; NLdpc = 16200 } )
+    ] |> Map.ofList
+
 /// Frames can only have a few distinct sizes
 type FECFRAME = 
     | Short of seq<(byte * float)> 
     | Long of seq<(byte * float)> 
 
 /// This is how long frames are (in bits)
-type bitsPerFrame = 
+type BitsPerFrame = 
     | Short = 16200
     | Long =  64800
 
 let (|LongFrame|ShortFrame|Invalid|) (len : int) = 
     match enum len with
-    | bitsPerFrame.Short -> ShortFrame
-    | bitsPerFrame.Long -> LongFrame
+    | BitsPerFrame.Short -> ShortFrame
+    | BitsPerFrame.Long -> LongFrame
     | _ -> Invalid
 
 /// Modulation types allowed for DVB-S2. DVB-S2X has a bunch more (not yet implemented).
