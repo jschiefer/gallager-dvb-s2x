@@ -3,22 +3,34 @@ module Hamstr.Ldpc.DvbS2
 open System
 open System.Numerics
 
-/// Modeling the rate as two integers instead of a fraction, for convenience
-type LdpcRate = int * int
-
 type LdpcCode = 
     | Rate_1_4
+    | Rate_1_3
+    | Rate_2_5
     | Rate_1_2
+    | Rate_3_5
+    | Rate_2_3
+    | Rate_3_4
+    | Rate_4_5
+    | Rate_5_6
+    | Rate_8_9
+    | Rate_9_10
 
 /// Frames can only have a few distinct sizes
 type FECFRAME = 
-    | Short 
-    | Long
+    | Short of seq<(byte * float)> 
+    | Long of seq<(byte * float)> 
 
 /// This is how long frames are (in bits)
-let bitsPerFrame = function
-    | Short ->  16200
-    | Long ->   64800
+type bitsPerFrame = 
+    | Short = 16200
+    | Long =  64800
+
+let (|LongFrame|ShortFrame|Invalid|) (len : int) = 
+    match enum len with
+    | bitsPerFrame.Short -> ShortFrame
+    | bitsPerFrame.Long -> LongFrame
+    | _ -> Invalid
 
 /// Modulation types allowed for DVB-S2. DVB-S2X has a bunch more (not yet implemented).
 type Modulation = 
@@ -42,40 +54,40 @@ let getConstellation = function
 /// There are still some bits missing here.
 type Modcod = {
     Modulation : Modulation
-    LdpcRate : LdpcRate
+    LdpcRate : LdpcCode
 }
 
 /// The PLS code defines the MODCOD used in a frame. 
 let ModCodLookup = 
     [
-        ( 1uy, { Modulation = M_QPSK; LdpcRate = (1, 4) } );
-        ( 2uy, { Modulation = M_QPSK; LdpcRate = (1, 3) } );
-        ( 3uy, { Modulation = M_QPSK; LdpcRate = (2, 5) } );
-        ( 4uy, { Modulation = M_QPSK; LdpcRate = (1, 2) } );
-        ( 5uy, { Modulation = M_QPSK; LdpcRate = (3, 5) } );
-        ( 6uy, { Modulation = M_QPSK; LdpcRate = (2, 3) } );
-        ( 7uy, { Modulation = M_QPSK; LdpcRate = (3, 4) } );
-        ( 8uy, { Modulation = M_QPSK; LdpcRate = (4, 5) } );
-        ( 9uy, { Modulation = M_QPSK; LdpcRate = (5, 6) } );
-        ( 10uy, { Modulation = M_QPSK; LdpcRate = (8, 9) } );
-        ( 11uy, { Modulation = M_QPSK; LdpcRate = (9, 10) } );
-        ( 12uy, { Modulation = M_8PSK; LdpcRate = (3, 5) } );
-        ( 13uy, { Modulation = M_8PSK; LdpcRate = (2, 3) } );
-        ( 14uy, { Modulation = M_8PSK; LdpcRate = (3, 4) } );
-        ( 15uy, { Modulation = M_8PSK; LdpcRate = (5, 6) } );
-        ( 16uy, { Modulation = M_8PSK; LdpcRate = (8, 9) } );
-        ( 17uy, { Modulation = M_8PSK; LdpcRate = (9, 10) } );
-        ( 18uy, { Modulation = M_16APSK_4_12; LdpcRate = (2, 3) } );
-        ( 19uy, { Modulation = M_16APSK_4_12; LdpcRate = (3, 4) } );
-        ( 20uy, { Modulation = M_16APSK_4_12; LdpcRate = (4, 5) } );
-        ( 21uy, { Modulation = M_16APSK_4_12; LdpcRate = (5, 6) } );
-        ( 22uy, { Modulation = M_16APSK_4_12; LdpcRate = (8, 9) } );
-        ( 23uy, { Modulation = M_16APSK_4_12; LdpcRate = (9, 10) } );
-        ( 24uy, { Modulation = M_32APSK_4_12_16; LdpcRate = (3, 4) } );
-        ( 25uy, { Modulation = M_32APSK_4_12_16; LdpcRate = (4, 5) } );
-        ( 26uy, { Modulation = M_32APSK_4_12_16; LdpcRate = (5, 6) } );
-        ( 27uy, { Modulation = M_32APSK_4_12_16; LdpcRate = (8, 9) } );
-        ( 28uy, { Modulation = M_32APSK_4_12_16; LdpcRate = (9, 10) } );
+        ( 1uy, { Modulation = M_QPSK; LdpcRate = Rate_1_4 } );
+        ( 2uy, { Modulation = M_QPSK; LdpcRate = Rate_1_3 } );
+        ( 3uy, { Modulation = M_QPSK; LdpcRate = Rate_2_5 } );
+        ( 4uy, { Modulation = M_QPSK; LdpcRate = Rate_1_2 } );
+        ( 5uy, { Modulation = M_QPSK; LdpcRate = Rate_3_5 } );
+        ( 6uy, { Modulation = M_QPSK; LdpcRate = Rate_2_3 } );
+        ( 7uy, { Modulation = M_QPSK; LdpcRate = Rate_3_4 } );
+        ( 8uy, { Modulation = M_QPSK; LdpcRate = Rate_4_5 } );
+        ( 9uy, { Modulation = M_QPSK; LdpcRate = Rate_5_6 } );
+        ( 10uy, { Modulation = M_QPSK; LdpcRate = Rate_8_9 } );
+        ( 11uy, { Modulation = M_QPSK; LdpcRate = Rate_9_10 } );
+        ( 12uy, { Modulation = M_8PSK; LdpcRate = Rate_3_5 } );
+        ( 13uy, { Modulation = M_8PSK; LdpcRate = Rate_2_3 } );
+        ( 14uy, { Modulation = M_8PSK; LdpcRate = Rate_3_4 } );
+        ( 15uy, { Modulation = M_8PSK; LdpcRate = Rate_5_6 } );
+        ( 16uy, { Modulation = M_8PSK; LdpcRate = Rate_8_9 } );
+        ( 17uy, { Modulation = M_8PSK; LdpcRate = Rate_9_10 } );
+        ( 18uy, { Modulation = M_16APSK_4_12; LdpcRate = Rate_2_3 } );
+        ( 19uy, { Modulation = M_16APSK_4_12; LdpcRate = Rate_3_4 } );
+        ( 20uy, { Modulation = M_16APSK_4_12; LdpcRate = Rate_4_5 } );
+        ( 21uy, { Modulation = M_16APSK_4_12; LdpcRate = Rate_5_6 } );
+        ( 22uy, { Modulation = M_16APSK_4_12; LdpcRate = Rate_8_9 } );
+        ( 23uy, { Modulation = M_16APSK_4_12; LdpcRate = Rate_9_10 } );
+        ( 24uy, { Modulation = M_32APSK_4_12_16; LdpcRate = Rate_3_4 } );
+        ( 25uy, { Modulation = M_32APSK_4_12_16; LdpcRate = Rate_4_5 } );
+        ( 26uy, { Modulation = M_32APSK_4_12_16; LdpcRate = Rate_5_6 } );
+        ( 27uy, { Modulation = M_32APSK_4_12_16; LdpcRate = Rate_8_9 } );
+        ( 28uy, { Modulation = M_32APSK_4_12_16; LdpcRate = Rate_9_10 } );
     ] |> Map.ofList
 
 /// Parity bit accumulator table, 1/2 rate, long frames
@@ -173,13 +185,12 @@ let ldpc_1_2_l =
         [ 53; 19267; 20113 ]
     ]
 
-let findParityTable frameType code = 
-    match frameType with
-    | Long -> 
-        match code with 
-        | (1, 2) -> (ldpc_1_2_l, 90)
-    | Short -> 
-        match code with 
-        | (1, 2) -> (ldpc_1_2_l, 90)
+let findLongParityTable = function
+    | Rate_1_2 -> (ldpc_1_2_l, 90)
 
-    
+let findShortParityTable = function
+    | Rate_1_2 -> (ldpc_1_2_l, 90)
+
+let findParityTable rate = function
+    | Long(_) -> findLongParityTable rate
+    | Short(_) -> findShortParityTable rate

@@ -24,21 +24,26 @@ let readSymbol reader modulation =
     let noiseVariance = 0.2
     readComplexNumber reader |> demodulateSymbol noiseVariance modulation
 
-let readFrame fileType frametype modulation reader =
-    match fileType with
-    | IqFile ->
-        let nSamplesToRead = bitsPerFrame frametype / bitsPerSymbol modulation
-        [ 1 .. nSamplesToRead ] 
-        |> Seq.collect (fun _ -> readSymbol reader modulation)
-    | BitFile ->
-        [ 1 .. bitsPerFrame frametype ] 
-        |> Seq.map (fun _ -> (reader.ReadByte(), 0.0))
+let readFrame fileType frameLength modulation reader =
+    let sequence = 
+        match fileType with
+        | IqFile ->
+            let nSamplesToRead = frameLength / bitsPerSymbol modulation
+            [ 1 .. nSamplesToRead ] 
+            |> Seq.collect (fun _ -> readSymbol reader modulation)
+        | BitFile ->
+            [ 1 .. frameLength ] 
+            |> Seq.map (fun _ -> (reader.ReadByte(), 0.0))
+        |> List.ofSeq
+    match sequence |> List.length with
+    | LongFrame -> Some(Long(sequence))
+    | ShortFrame -> Some(Short(sequence))
+    | Invalid -> None
 
 let readTestFile fileType fileName frameType modulation =
     use stream = File.OpenRead(fileName)
     use reader = new BinaryReader(stream)
     readFrame fileType frameType modulation reader 
-    |> List.ofSeq
 
 let checkForBitErrors referenceFrame frame =
     let comparer a b =
@@ -47,13 +52,15 @@ let checkForBitErrors referenceFrame frame =
     let foo = frame |> List.compareWith comparer referenceFrame
     ()
 
-
 [<EntryPoint>]
 let main argv =
-    let frameType = Long
+    let frameLength = bitsPerFrame.Long |> int32
     let modcod = ModCodLookup.[testPls]
-    let frame = readTestFile IqFile iqDataFileName frameType modcod.Modulation 
-    let referenceFrame = readTestFile BitFile bitFileName frameType modcod.Modulation 
-    let decodedFrame = decode (1, 2) frame
+    let frame = readTestFile IqFile iqDataFileName frameLength modcod.Modulation 
+    let referenceFrame = readTestFile BitFile bitFileName frameLength modcod.Modulation 
+    let decodedFrame = 
+        match frame with
+        | Some(x) -> decode Rate_1_2 x
+        | _ -> []
 
     0

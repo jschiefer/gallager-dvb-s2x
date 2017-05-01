@@ -7,7 +7,7 @@ open Hamstr.Ldpc.DvbS2
 open Hamstr.Demod
 
 /// LDPC-decode the frame (which is an array of tuples of bit and LLR)
-let decode (rate : int * int) (frame : seq<(byte * float)>) =
-    let parityTable = findParityTable rate
+let decode rate frame =
+    let (parityTable, q) = findParityTable rate frame
 
     [ 0uy; 0uy ]
