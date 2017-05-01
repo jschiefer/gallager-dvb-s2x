@@ -4,19 +4,21 @@ open System
 open System.Numerics
 
 /// Modeling the rate as two integers instead of a fraction, for convenience
-type LdpcRate = int * int 
+type LdpcRate = int * int
+
+type LdpcCode = 
+    | Rate_1_4
+    | Rate_1_2
 
 /// Frames can only have a few distinct sizes
 type FECFRAME = 
     | Short 
     | Long
-    | Test
 
 /// This is how long frames are (in bits)
 let bitsPerFrame = function
     | Short ->  16200
     | Long ->   64800
-    | Test -> 16
 
 /// Modulation types allowed for DVB-S2. DVB-S2X has a bunch more (not yet implemented).
 type Modulation = 
@@ -171,5 +173,13 @@ let ldpc_1_2_l =
         [ 53; 19267; 20113 ]
     ]
 
-let findParityTable = function
-    | (1, 2) -> ldpc_1_2_l
+let findParityTable frameType code = 
+    match frameType with
+    | Long -> 
+        match code with 
+        | (1, 2) -> (ldpc_1_2_l, 90)
+    | Short -> 
+        match code with 
+        | (1, 2) -> (ldpc_1_2_l, 90)
+
+    

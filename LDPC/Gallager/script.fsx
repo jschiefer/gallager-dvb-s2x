@@ -23,4 +23,3 @@ let checkNodes b = ()
 let bitNodes c = ()
 
 let pt = findParityTable (1, 2)
-
