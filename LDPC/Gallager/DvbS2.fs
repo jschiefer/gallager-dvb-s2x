@@ -22,6 +22,7 @@ type CodingTableEntry = {
     KLdpc : int     // BCH coded block nBch, LDPC Uncoded Block kLdpc
     BchTError : int // BCH t-error correction
     NLdpc : int     // LDPC Coded Block nLdpc
+    q : int         
 }
 
 /// Frames can only have a few distinct sizes
@@ -42,31 +43,31 @@ let (|LongFrame|ShortFrame|Invalid|) (len : int) =
 
 let longCodingTable = 
     [
-        ( Rate_1_4, { KBch = 16008; KLdpc = 16200; BchTError = 12; NLdpc = 64800 } )
-        ( Rate_1_3, { KBch = 21408; KLdpc = 21600; BchTError = 12; NLdpc = 64800 } )
-        ( Rate_2_5, { KBch = 25728; KLdpc = 25920; BchTError = 12; NLdpc = 64800 } )
-        ( Rate_1_2, { KBch = 32208; KLdpc = 32400; BchTError = 12; NLdpc = 64800 } )
-        ( Rate_3_5, { KBch = 38688; KLdpc = 38880; BchTError = 12; NLdpc = 64800 } )
-        ( Rate_2_3, { KBch = 43040; KLdpc = 43200; BchTError = 10; NLdpc = 64800 } )
-        ( Rate_3_4, { KBch = 48408; KLdpc = 48600; BchTError = 12; NLdpc = 64800 } )
-        ( Rate_4_5, { KBch = 51648; KLdpc = 51840; BchTError = 12; NLdpc = 64800 } )
-        ( Rate_5_6, { KBch = 53840; KLdpc = 54000; BchTError = 10; NLdpc = 64800 } )
-        ( Rate_8_9, { KBch = 57472; KLdpc = 57600; BchTError = 8; NLdpc = 64800 } )
-        ( Rate_9_10, { KBch = 58192; KLdpc = 58320; BchTError = 8; NLdpc = 64800 } )
+        ( Rate_1_4, { KBch = 16008; KLdpc = 16200; BchTError = 12; NLdpc = 64800; q = 135 } )
+        ( Rate_1_3, { KBch = 21408; KLdpc = 21600; BchTError = 12; NLdpc = 64800; q = 120 } )
+        ( Rate_2_5, { KBch = 25728; KLdpc = 25920; BchTError = 12; NLdpc = 64800; q = 108 } )
+        ( Rate_1_2, { KBch = 32208; KLdpc = 32400; BchTError = 12; NLdpc = 64800; q = 90 } )
+        ( Rate_3_5, { KBch = 38688; KLdpc = 38880; BchTError = 12; NLdpc = 64800; q = 72 } )
+        ( Rate_2_3, { KBch = 43040; KLdpc = 43200; BchTError = 10; NLdpc = 64800; q = 60 } )
+        ( Rate_3_4, { KBch = 48408; KLdpc = 48600; BchTError = 12; NLdpc = 64800; q = 45 } )
+        ( Rate_4_5, { KBch = 51648; KLdpc = 51840; BchTError = 12; NLdpc = 64800; q = 36 } )
+        ( Rate_5_6, { KBch = 53840; KLdpc = 54000; BchTError = 10; NLdpc = 64800; q = 30 } )
+        ( Rate_8_9, { KBch = 57472; KLdpc = 57600; BchTError = 8; NLdpc = 64800; q = 20 } )
+        ( Rate_9_10, { KBch = 58192; KLdpc = 58320; BchTError = 8; NLdpc = 64800; q = 18 } )
     ] |> Map.ofList
 
 let shortCodingTable = 
     [
-        ( Rate_1_4, { KBch = 3072; KLdpc = 3240; BchTError = 12; NLdpc = 16200 } )
-        ( Rate_1_3, { KBch = 5232; KLdpc = 5400; BchTError = 12; NLdpc = 16200 } )
-        ( Rate_2_5, { KBch = 6312; KLdpc = 6480; BchTError = 12; NLdpc = 16200 } )
-        ( Rate_1_2, { KBch = 7032; KLdpc = 7200; BchTError = 12; NLdpc = 16200 } )
-        ( Rate_3_5, { KBch = 9552; KLdpc = 9720; BchTError = 12; NLdpc = 16200 } )
-        ( Rate_2_3, { KBch = 10632; KLdpc = 10800; BchTError = 12; NLdpc = 16200 } )
-        ( Rate_3_4, { KBch = 11712; KLdpc = 11880; BchTError = 12; NLdpc = 16200 } )
-        ( Rate_4_5, { KBch = 12432; KLdpc = 12600; BchTError = 12; NLdpc = 16200 } )
-        ( Rate_5_6, { KBch = 13152; KLdpc = 13320; BchTError = 12; NLdpc = 16200 } )
-        ( Rate_8_9, { KBch = 14232; KLdpc = 14400; BchTError = 12; NLdpc = 16200 } )
+        ( Rate_1_4, { KBch = 3072; KLdpc = 3240; BchTError = 12; NLdpc = 16200; q = 36 } )
+        ( Rate_1_3, { KBch = 5232; KLdpc = 5400; BchTError = 12; NLdpc = 16200; q = 30 } )
+        ( Rate_2_5, { KBch = 6312; KLdpc = 6480; BchTError = 12; NLdpc = 16200; q = 27 } )
+        ( Rate_1_2, { KBch = 7032; KLdpc = 7200; BchTError = 12; NLdpc = 16200; q = 25 } )
+        ( Rate_3_5, { KBch = 9552; KLdpc = 9720; BchTError = 12; NLdpc = 16200; q = 18 } )
+        ( Rate_2_3, { KBch = 10632; KLdpc = 10800; BchTError = 12; NLdpc = 16200; q = 15 } )
+        ( Rate_3_4, { KBch = 11712; KLdpc = 11880; BchTError = 12; NLdpc = 16200; q = 12 } )
+        ( Rate_4_5, { KBch = 12432; KLdpc = 12600; BchTError = 12; NLdpc = 16200; q = 10 } )
+        ( Rate_5_6, { KBch = 13152; KLdpc = 13320; BchTError = 12; NLdpc = 16200; q = 8 } )
+        ( Rate_8_9, { KBch = 14232; KLdpc = 14400; BchTError = 12; NLdpc = 16200; q = 5 } )
     ] |> Map.ofList
 
 let codingParameters rate = function
@@ -226,12 +227,12 @@ let ldpc_1_2_l =
         [ 53; 19267; 20113 ]
     ]
 
-let findLongParityTable = function
-    | Rate_1_2 -> (ldpc_1_2_l, 90)
+let findLongLdpcParameters = function
+    | Rate_1_2 as r -> (ldpc_1_2_l, longCodingTable.[r])
 
-let findShortParityTable = function
-    | Rate_1_2 -> (ldpc_1_2_l, 90)
+let findShortLdpcParameters = function
+    | Rate_1_2 as r -> (ldpc_1_2_l, shortCodingTable.[r])
 
-let findParityTable rate = function
-    | Long(_) -> findLongParityTable rate
-    | Short(_) -> findShortParityTable rate
+let findLdpcParameters rate = function
+    | Long(_) -> findLongLdpcParameters rate
+    | Short(_) -> findShortLdpcParameters rate
