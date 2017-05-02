@@ -24,6 +24,22 @@ type CodingTableEntry = {
     NLdpc : int     // LDPC Coded Block nLdpc
 }
 
+/// Frames can only have a few distinct sizes
+type FECFRAME = 
+    | Short of seq<(byte * float)> 
+    | Long of seq<(byte * float)> 
+
+/// This is how long frames are (in bits)
+type BitsPerFrame = 
+    | Short = 16200
+    | Long =  64800
+
+let (|LongFrame|ShortFrame|Invalid|) (len : int) = 
+    match enum len with
+    | BitsPerFrame.Short -> ShortFrame
+    | BitsPerFrame.Long -> LongFrame
+    | _ -> Invalid
+
 let longCodingTable = 
     [
         ( Rate_1_4, { KBch = 16008; KLdpc = 16200; BchTError = 12; NLdpc = 64800 } )
@@ -53,21 +69,9 @@ let shortCodingTable =
         ( Rate_8_9, { KBch = 14232; KLdpc = 14400; BchTError = 12; NLdpc = 16200 } )
     ] |> Map.ofList
 
-/// Frames can only have a few distinct sizes
-type FECFRAME = 
-    | Short of seq<(byte * float)> 
-    | Long of seq<(byte * float)> 
-
-/// This is how long frames are (in bits)
-type BitsPerFrame = 
-    | Short = 16200
-    | Long =  64800
-
-let (|LongFrame|ShortFrame|Invalid|) (len : int) = 
-    match enum len with
-    | BitsPerFrame.Short -> ShortFrame
-    | BitsPerFrame.Long -> LongFrame
-    | _ -> Invalid
+let codingParameters rate = function
+    | Long (_) -> longCodingTable.[rate]
+    | Short(_) -> shortCodingTable.[rate]
 
 /// Modulation types allowed for DVB-S2. DVB-S2X has a bunch more (not yet implemented).
 type Modulation = 
