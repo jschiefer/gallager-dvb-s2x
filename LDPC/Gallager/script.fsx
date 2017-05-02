@@ -15,17 +15,13 @@ let newFrame = Array.create 32400 List.empty<int>
 
 // Go through the whole table and add the info bit to the relevant accumulators
 let bar = 
-    let (accumulatorTable, codeParameters) = findLongLdpcParameters Rate_1_2
-    let nLdpc = 64800
-    let kLdpc = 32400
-    let q = 90
+    let (accumulatorTable, codeParam) = findLongLdpcParameters Rate_1_2
     accumulatorTable
     |> List.iter (fun line ->
         line 
         |> List.iter (fun x -> 
             [0..359] 
             |> List.iter (fun m ->
-                let index = (x + (m % 360) * q) % (nLdpc - kLdpc)
+                let index = (x + (m % 360) * codeParam.q) % (codeParam.NLdpc - codeParam.KLdpc)
                 newFrame.[index] <- m::newFrame.[index])))
 
-newFrame
