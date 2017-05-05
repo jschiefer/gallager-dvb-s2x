@@ -54,6 +54,7 @@ let checkForBitErrors referenceFrame frame =
 
 [<EntryPoint>]
 let main argv =
+    (*
     let frameLength = BitsPerFrame.Long |> int32
     let modcod = ModCodLookup.[testPls]
     let frame = readTestFile IqFile iqDataFileName frameLength modcod.Modulation 
@@ -62,5 +63,9 @@ let main argv =
         match frame with
         | Some(x) -> decode Rate_1_2 x
         | _ -> []
+*)
+    makeTable
+    |> Array.map (fun xs -> printfn "%A" (xs |> List.sort))
+    |> ignore
 
     0
