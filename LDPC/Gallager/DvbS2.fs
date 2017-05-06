@@ -126,6 +126,7 @@ let ModCodLookup =
 
 let findLongLdpcParameters = function
     | Rate_1_2 as r -> (ldpc_1_2_L, longCodingTable.[r])
+    | Rate_2_3 as r -> (ldpc_tab_2_3N, longCodingTable.[r])
 
 let findShortLdpcParameters = function
     | Rate_1_2 as r -> (ldpc_1_2_L, shortCodingTable.[r])

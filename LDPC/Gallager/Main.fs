@@ -64,8 +64,7 @@ let main argv =
         | Some(x) -> decode Rate_1_2 x
         | _ -> []
 *)
-    makeTable
-    |> Array.map (fun xs -> printfn "%A" (xs |> List.sort))
-    |> ignore
+    let a = makeParityTable () 
+    [0 .. 5] |> List.iteri (fun x i -> printfn "a.[%d] = %A" i x)
 
     0
