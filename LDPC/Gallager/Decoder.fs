@@ -27,6 +27,7 @@ let makeParityTable () =
 
     parityTable
     
+// let encode 
 
 /// LDPC-decode the frame (which is an array of tuples of bit and LLR)
 let decode rate frame =

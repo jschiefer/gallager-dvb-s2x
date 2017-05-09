@@ -17,21 +17,28 @@ type CodingTableEntry = {
     q : int         
 }
 
+type FecFrameContent<'T> = {
+    LdpcCode : LdpcCode
+    data : seq<'T>
+}
+
 /// Frames can only have a few distinct sizes
 type FECFRAME = 
-    | Short of seq<(byte * float)> 
-    | Long of seq<(byte * float)> 
+    | ShortFrame of FecFrameContent< seq<(byte * float)> >
+    | LongFrame of FecFrameContent< seq<(byte * float)> >
 
 /// This is how long frames are (in bits)
 type BitsPerFrame = 
     | Short = 16200
     | Long =  64800
 
+(*
 let (|LongFrame|ShortFrame|Invalid|) (len : int) = 
     match enum len with
     | BitsPerFrame.Short -> ShortFrame
     | BitsPerFrame.Long -> LongFrame
     | _ -> Invalid
+*)
 
 let longCodingTable = 
     [
@@ -63,8 +70,8 @@ let shortCodingTable =
     ] |> Map.ofList
 
 let codingParameters rate = function
-    | Long (_) -> longCodingTable.[rate]
-    | Short(_) -> shortCodingTable.[rate]
+    | LongFrame (_) -> longCodingTable.[rate]
+    | ShortFrame(_) -> shortCodingTable.[rate]
 
 /// Modulation types allowed for DVB-S2. DVB-S2X has a bunch more (not yet implemented).
 type Modulation = 
@@ -123,14 +130,3 @@ let ModCodLookup =
         ( 27uy, { Modulation = M_32APSK_4_12_16; LdpcRate = Rate_8_9 } );
         ( 28uy, { Modulation = M_32APSK_4_12_16; LdpcRate = Rate_9_10 } );
     ] |> Map.ofList
-
-let findLongLdpcParameters = function
-    | Rate_1_2 as r -> (ldpc_1_2_L, longCodingTable.[r])
-    | Rate_2_3 as r -> (ldpc_tab_2_3N, longCodingTable.[r])
-
-let findShortLdpcParameters = function
-    | Rate_1_2 as r -> (ldpc_1_2_L, shortCodingTable.[r])
-
-let findLdpcParameters rate = function
-    | Long(_) -> findLongLdpcParameters rate
-    | Short(_) -> findShortLdpcParameters rate

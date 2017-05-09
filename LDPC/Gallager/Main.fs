@@ -20,9 +20,11 @@ let readComplexNumber (reader:BinaryReader) =
     let imaginary = reader.ReadSingle()
     Complex(float real, float imaginary)
 
+// FIXME The demod should happen on a per-frame basis, not per-symbol
 let readSymbol reader modulation = 
     let noiseVariance = 0.2
-    readComplexNumber reader |> demodulateSymbol noiseVariance modulation
+    readComplexNumber reader 
+    |> demodulateSymbol noiseVariance modulation
 
 let readFrame fileType frameLength modulation reader =
     let sequence = 
@@ -36,8 +38,8 @@ let readFrame fileType frameLength modulation reader =
             |> Seq.map (fun _ -> (reader.ReadByte(), 0.0))
         |> List.ofSeq
     match sequence |> List.length with
-    | LongFrame -> Some(Long(sequence))
-    | ShortFrame -> Some(Short(sequence))
+    | LongFrame -> Some(LongFrame(sequence))
+    | ShortFrame -> Some(ShortFrame(sequence))
     | Invalid -> None
 
 let readTestFile fileType fileName frameType modulation =
