@@ -25,7 +25,7 @@ RUN pip install PyBOMBS
 
 # Create user amsat, and enable sudo
 RUN groupadd -r ${TheUser} && useradd -m -r -g ${TheUser} ${TheUser} && usermod -aG sudo ${TheUser}
-RUN echo 'amsat ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+RUN echo ${TheUser}' ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 WORKDIR ${TheHomeDir}
 
 # Add recipes to PyBOMBS
