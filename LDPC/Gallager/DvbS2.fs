@@ -8,6 +8,26 @@ type LdpcCode =
     | Rate_1_4 | Rate_1_3 | Rate_2_5 | Rate_1_2 | Rate_3_5 | Rate_2_3 
     | Rate_3_4 | Rate_4_5 | Rate_5_6 | Rate_8_9 | Rate_9_10
 
+// How we describe a databit (LLR, effectively)
+type Databit = (byte * float)
+
+type FECFRAME = {
+    LdpcCode : LdpcCode
+    data : seq<Databit>
+    parity : seq<Databit> option
+}
+
+/// This is how long frames are (in bits)
+type BitsPerFrame = 
+    | Short = 16200
+    | Long =  64800
+
+let (|LongFrame|ShortFrame|Invalid|) (frame : FECFRAME) = 
+    match frame.data |> Seq.length with
+    | 16200 -> ShortFrame
+    | 64800 -> LongFrame
+    | _ -> Invalid
+
 /// Coding parameters, as per secion 5.3, tables 5
 type CodingTableEntry = {
     KBch : int      // BCH Uncoded block kBch
@@ -16,29 +36,6 @@ type CodingTableEntry = {
     NLdpc : int     // LDPC Coded Block nLdpc
     q : int         
 }
-
-type FecFrameContent<'T> = {
-    LdpcCode : LdpcCode
-    data : seq<'T>
-}
-
-/// Frames can only have a few distinct sizes
-type FECFRAME = 
-    | ShortFrame of FecFrameContent< seq<(byte * float)> >
-    | LongFrame of FecFrameContent< seq<(byte * float)> >
-
-/// This is how long frames are (in bits)
-type BitsPerFrame = 
-    | Short = 16200
-    | Long =  64800
-
-(*
-let (|LongFrame|ShortFrame|Invalid|) (len : int) = 
-    match enum len with
-    | BitsPerFrame.Short -> ShortFrame
-    | BitsPerFrame.Long -> LongFrame
-    | _ -> Invalid
-*)
 
 let longCodingTable = 
     [

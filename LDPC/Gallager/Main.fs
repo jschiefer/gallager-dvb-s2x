@@ -26,26 +26,23 @@ let readSymbol reader modulation =
     readComplexNumber reader 
     |> demodulateSymbol noiseVariance modulation
 
-let readFrame fileType frameLength modulation reader =
+let readFrame fileType frameLength modcod reader =
     let sequence = 
         match fileType with
         | IqFile ->
-            let nSamplesToRead = frameLength / bitsPerSymbol modulation
+            let nSamplesToRead = frameLength / bitsPerSymbol modcod.Modulation
             [ 1 .. nSamplesToRead ] 
-            |> Seq.collect (fun _ -> readSymbol reader modulation)
+            |> Seq.collect (fun _ -> readSymbol reader modcod.Modulation)
         | BitFile ->
             [ 1 .. frameLength ] 
             |> Seq.map (fun _ -> (reader.ReadByte(), 0.0))
         |> List.ofSeq
-    match sequence |> List.length with
-    | LongFrame -> Some(LongFrame(sequence))
-    | ShortFrame -> Some(ShortFrame(sequence))
-    | Invalid -> None
+    Some({ LdpcCode = modcod.LdpcRate; data = sequence })
 
-let readTestFile fileType fileName frameType modulation =
+let readTestFile fileType fileName frameType modcod =
     use stream = File.OpenRead(fileName)
     use reader = new BinaryReader(stream)
-    readFrame fileType frameType modulation reader 
+    readFrame fileType frameType modcod reader 
 
 let checkForBitErrors referenceFrame frame =
     let comparer a b =
@@ -56,17 +53,17 @@ let checkForBitErrors referenceFrame frame =
 
 [<EntryPoint>]
 let main argv =
-    (*
     let frameLength = BitsPerFrame.Long |> int32
     let modcod = ModCodLookup.[testPls]
-    let frame = readTestFile IqFile iqDataFileName frameLength modcod.Modulation 
-    let referenceFrame = readTestFile BitFile bitFileName frameLength modcod.Modulation 
+    let frame = readTestFile IqFile iqDataFileName frameLength modcod
+    let referenceFrame = readTestFile BitFile bitFileName frameLength modcod
     let decodedFrame = 
         match frame with
         | Some(x) -> decode Rate_1_2 x
         | _ -> []
-*)
+(*
     let a = makeParityTable () 
     [0 .. 5] |> List.iteri (fun x i -> printfn "a.[%d] = %A" i x)
+*)
 
     0
