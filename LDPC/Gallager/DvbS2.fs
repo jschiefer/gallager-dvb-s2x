@@ -53,9 +53,9 @@ let longCodingTable =
         ( Rate_9_10, { KBch = 58192; KLdpc = 58320; BchTError = 8; NLdpc = 64800; q = 18; ParityTable = ldpc_9_10N } )
     ] |> Map.ofList
 
+(*
 let shortCodingTable = 
     [
-(*
         ( Rate_1_4, { KBch = 3072; KLdpc = 3240; BchTError = 12; NLdpc = 16200; q = 36 } )
         ( Rate_1_3, { KBch = 5232; KLdpc = 5400; BchTError = 12; NLdpc = 16200; q = 30 } )
         ( Rate_2_5, { KBch = 6312; KLdpc = 6480; BchTError = 12; NLdpc = 16200; q = 27 } )
@@ -66,12 +66,8 @@ let shortCodingTable =
         ( Rate_4_5, { KBch = 12432; KLdpc = 12600; BchTError = 12; NLdpc = 16200; q = 10 } )
         ( Rate_5_6, { KBch = 13152; KLdpc = 13320; BchTError = 12; NLdpc = 16200; q = 8 } )
         ( Rate_8_9, { KBch = 14232; KLdpc = 14400; BchTError = 12; NLdpc = 16200; q = 5 } )
-*)
     ] |> Map.ofList
-
-let codingParameters rate = function
-    | LongFrame (_) -> longCodingTable.[rate]
-    | ShortFrame(_) -> shortCodingTable.[rate]
+*)
 
 /// Modulation types allowed for DVB-S2. DVB-S2X has a bunch more (not yet implemented).
 type Modulation = 
