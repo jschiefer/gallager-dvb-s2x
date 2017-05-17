@@ -37,7 +37,7 @@ let readFrame fileType frameLength modcod reader =
             [ 1 .. frameLength ] 
             |> Seq.map (fun _ -> (reader.ReadByte(), 0.0))
         |> List.ofSeq
-    Some({ LdpcCode = modcod.LdpcRate; data = sequence })
+    Some({ LdpcCode = modcod.LdpcRate; data = sequence; parity = None })
 
 let readTestFile fileType fileName frameType modcod =
     use stream = File.OpenRead(fileName)

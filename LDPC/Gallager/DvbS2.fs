@@ -34,26 +34,28 @@ type CodingTableEntry = {
     KLdpc : int     // BCH coded block nBch, LDPC Uncoded Block kLdpc
     BchTError : int // BCH t-error correction
     NLdpc : int     // LDPC Coded Block nLdpc
+    ParityTable : int list list
     q : int         
 }
 
 let longCodingTable = 
     [
-        ( Rate_1_4, { KBch = 16008; KLdpc = 16200; BchTError = 12; NLdpc = 64800; q = 135 } )
-        ( Rate_1_3, { KBch = 21408; KLdpc = 21600; BchTError = 12; NLdpc = 64800; q = 120 } )
-        ( Rate_2_5, { KBch = 25728; KLdpc = 25920; BchTError = 12; NLdpc = 64800; q = 108 } )
-        ( Rate_1_2, { KBch = 32208; KLdpc = 32400; BchTError = 12; NLdpc = 64800; q = 90 } )
-        ( Rate_3_5, { KBch = 38688; KLdpc = 38880; BchTError = 12; NLdpc = 64800; q = 72 } )
-        ( Rate_2_3, { KBch = 43040; KLdpc = 43200; BchTError = 10; NLdpc = 64800; q = 60 } )
-        ( Rate_3_4, { KBch = 48408; KLdpc = 48600; BchTError = 12; NLdpc = 64800; q = 45 } )
-        ( Rate_4_5, { KBch = 51648; KLdpc = 51840; BchTError = 12; NLdpc = 64800; q = 36 } )
-        ( Rate_5_6, { KBch = 53840; KLdpc = 54000; BchTError = 10; NLdpc = 64800; q = 30 } )
-        ( Rate_8_9, { KBch = 57472; KLdpc = 57600; BchTError = 8; NLdpc = 64800; q = 20 } )
-        ( Rate_9_10, { KBch = 58192; KLdpc = 58320; BchTError = 8; NLdpc = 64800; q = 18 } )
+        ( Rate_1_4, { KBch = 16008; KLdpc = 16200; BchTError = 12; NLdpc = 64800; q = 135; ParityTable = ldpc_1_4N } )
+        ( Rate_1_3, { KBch = 21408; KLdpc = 21600; BchTError = 12; NLdpc = 64800; q = 120; ParityTable = ldpc_1_3N } )
+        ( Rate_2_5, { KBch = 25728; KLdpc = 25920; BchTError = 12; NLdpc = 64800; q = 108; ParityTable = ldpc_2_5N } )
+        ( Rate_1_2, { KBch = 32208; KLdpc = 32400; BchTError = 12; NLdpc = 64800; q = 90; ParityTable = ldpc_1_2N } )
+        ( Rate_3_5, { KBch = 38688; KLdpc = 38880; BchTError = 12; NLdpc = 64800; q = 72; ParityTable = ldpc_3_5N } )
+        ( Rate_2_3, { KBch = 43040; KLdpc = 43200; BchTError = 10; NLdpc = 64800; q = 60; ParityTable = ldpc_2_3N } )
+        ( Rate_3_4, { KBch = 48408; KLdpc = 48600; BchTError = 12; NLdpc = 64800; q = 45; ParityTable = ldpc_3_4N } )
+        ( Rate_4_5, { KBch = 51648; KLdpc = 51840; BchTError = 12; NLdpc = 64800; q = 36; ParityTable = ldpc_4_5N } )
+        ( Rate_5_6, { KBch = 53840; KLdpc = 54000; BchTError = 10; NLdpc = 64800; q = 30; ParityTable = ldpc_5_6N } )
+        ( Rate_8_9, { KBch = 57472; KLdpc = 57600; BchTError = 8; NLdpc = 64800; q = 20 ; ParityTable = ldpc_8_9N } )
+        ( Rate_9_10, { KBch = 58192; KLdpc = 58320; BchTError = 8; NLdpc = 64800; q = 18; ParityTable = ldpc_9_10N } )
     ] |> Map.ofList
 
 let shortCodingTable = 
     [
+(*
         ( Rate_1_4, { KBch = 3072; KLdpc = 3240; BchTError = 12; NLdpc = 16200; q = 36 } )
         ( Rate_1_3, { KBch = 5232; KLdpc = 5400; BchTError = 12; NLdpc = 16200; q = 30 } )
         ( Rate_2_5, { KBch = 6312; KLdpc = 6480; BchTError = 12; NLdpc = 16200; q = 27 } )
@@ -64,6 +66,7 @@ let shortCodingTable =
         ( Rate_4_5, { KBch = 12432; KLdpc = 12600; BchTError = 12; NLdpc = 16200; q = 10 } )
         ( Rate_5_6, { KBch = 13152; KLdpc = 13320; BchTError = 12; NLdpc = 16200; q = 8 } )
         ( Rate_8_9, { KBch = 14232; KLdpc = 14400; BchTError = 12; NLdpc = 16200; q = 5 } )
+*)
     ] |> Map.ofList
 
 let codingParameters rate = function
@@ -127,3 +130,6 @@ let ModCodLookup =
         ( 27uy, { Modulation = M_32APSK_4_12_16; LdpcRate = Rate_8_9 } );
         ( 28uy, { Modulation = M_32APSK_4_12_16; LdpcRate = Rate_9_10 } );
     ] |> Map.ofList
+
+let findLongCodingTableEntry rate =
+    longCodingTable.[rate]
