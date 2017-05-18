@@ -11,20 +11,24 @@ type LdpcCode =
 // How we describe a databit (LLR, effectively)
 type Databit = (byte * float)
 
+type FrameType =
+    | Short | Medium | Long 
+    static member BitLength = function
+        | Short -> 16200
+        | Medium -> 32400
+        | Long -> 64800
+
 type FECFRAME = {
-    LdpcCode : LdpcCode
+    frameType : FrameType
+    ldpcCode : LdpcCode
     data : seq<Databit>
     parity : seq<Databit> option
 }
 
-/// This is how long frames are (in bits)
-type BitsPerFrame = 
-    | Short = 16200
-    | Long =  64800
-
-let (|LongFrame|ShortFrame|Invalid|) (frame : FECFRAME) = 
+let (|LongFrame|MediumFrame|ShortFrame|Invalid|) (frame : FECFRAME) = 
     match frame.data |> Seq.length with
     | 16200 -> ShortFrame
+    | 32400 -> MediumFrame
     | 64800 -> LongFrame
     | _ -> Invalid
 

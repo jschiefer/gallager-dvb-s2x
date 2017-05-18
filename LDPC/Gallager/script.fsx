@@ -7,4 +7,4 @@ open Hamstr.Demod
 open Hamstr.Ldpc.Decoder
 
 let a = makeParityTable()
-a.[0]
+printfn "%A" a.[0]

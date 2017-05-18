@@ -26,7 +26,8 @@ let readSymbol reader modulation =
     readComplexNumber reader 
     |> demodulateSymbol noiseVariance modulation
 
-let readFrame fileType frameLength modcod reader =
+let readFrame fileType frameType modcod reader =
+    let frameLength = frameType |> FrameType.BitLength
     let sequence = 
         match fileType with
         | IqFile ->
@@ -37,7 +38,7 @@ let readFrame fileType frameLength modcod reader =
             [ 1 .. frameLength ] 
             |> Seq.map (fun _ -> (reader.ReadByte(), 0.0))
         |> List.ofSeq
-    Some({ LdpcCode = modcod.LdpcRate; data = sequence; parity = None })
+    Some({ frameType = frameType; ldpcCode = modcod.LdpcRate; data = sequence; parity = None })
 
 let readTestFile fileType fileName frameType modcod =
     use stream = File.OpenRead(fileName)
@@ -53,17 +54,15 @@ let checkForBitErrors referenceFrame frame =
 
 [<EntryPoint>]
 let main argv =
-    let frameLength = BitsPerFrame.Long |> int32
+    let frameLength = Long |> FrameType.BitLength 
     let modcod = ModCodLookup.[testPls]
-    let frame = readTestFile IqFile iqDataFileName frameLength modcod
-    let referenceFrame = readTestFile BitFile bitFileName frameLength modcod
+    let frame = readTestFile IqFile iqDataFileName Long modcod
+    let referenceFrame = readTestFile BitFile bitFileName Long modcod
     let decodedFrame = 
         match frame with
         | Some(x) -> decode Rate_1_2 x
         | _ -> []
-(*
     let a = makeParityTable () 
     [0 .. 5] |> List.iteri (fun x i -> printfn "a.[%d] = %A" i x)
-*)
 
     0

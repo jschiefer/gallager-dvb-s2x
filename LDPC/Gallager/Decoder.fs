@@ -21,9 +21,11 @@ let makeParityTable () =
             |> List.iter (fun m ->
                 let index = (x + m * codeParam.q) % nParityBits
                 parityTable.[index] <- m::parityTable.[index])))
+    (*
     [0 .. (nParityBits - 1)]
     |> List.pairwise
     |> List.iter (fun (p, q) -> parityTable.[q] <- List.append parityTable.[p] parityTable.[q])
+    *)
 
     parityTable
     
