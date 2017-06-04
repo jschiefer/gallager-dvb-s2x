@@ -8,7 +8,10 @@ type LdpcCode =
     | Rate_1_4 | Rate_1_3 | Rate_2_5 | Rate_1_2 | Rate_3_5 | Rate_2_3 
     | Rate_3_4 | Rate_4_5 | Rate_5_6 | Rate_8_9 | Rate_9_10
 
+
 // How we describe a databit (LLR, effectively)
+// This is not what we want. This should be a bit, or an int, or an LLR (double) or 
+// an LLR (6-bit int)
 type Databit = (byte * float)
 
 type FrameType =
@@ -38,23 +41,23 @@ type CodingTableEntry = {
     KLdpc : int     // BCH coded block nBch, LDPC Uncoded Block kLdpc
     BchTError : int // BCH t-error correction
     NLdpc : int     // LDPC Coded Block nLdpc
-    ParityTable : int list list
+    AccTable : int list list
     q : int         
 }
 
 let longCodingTable = 
     [
-        ( Rate_1_4, { KBch = 16008; KLdpc = 16200; BchTError = 12; NLdpc = 64800; q = 135; ParityTable = ldpc_1_4N } )
-        ( Rate_1_3, { KBch = 21408; KLdpc = 21600; BchTError = 12; NLdpc = 64800; q = 120; ParityTable = ldpc_1_3N } )
-        ( Rate_2_5, { KBch = 25728; KLdpc = 25920; BchTError = 12; NLdpc = 64800; q = 108; ParityTable = ldpc_2_5N } )
-        ( Rate_1_2, { KBch = 32208; KLdpc = 32400; BchTError = 12; NLdpc = 64800; q = 90; ParityTable = ldpc_1_2N } )
-        ( Rate_3_5, { KBch = 38688; KLdpc = 38880; BchTError = 12; NLdpc = 64800; q = 72; ParityTable = ldpc_3_5N } )
-        ( Rate_2_3, { KBch = 43040; KLdpc = 43200; BchTError = 10; NLdpc = 64800; q = 60; ParityTable = ldpc_2_3N } )
-        ( Rate_3_4, { KBch = 48408; KLdpc = 48600; BchTError = 12; NLdpc = 64800; q = 45; ParityTable = ldpc_3_4N } )
-        ( Rate_4_5, { KBch = 51648; KLdpc = 51840; BchTError = 12; NLdpc = 64800; q = 36; ParityTable = ldpc_4_5N } )
-        ( Rate_5_6, { KBch = 53840; KLdpc = 54000; BchTError = 10; NLdpc = 64800; q = 30; ParityTable = ldpc_5_6N } )
-        ( Rate_8_9, { KBch = 57472; KLdpc = 57600; BchTError = 8; NLdpc = 64800; q = 20 ; ParityTable = ldpc_8_9N } )
-        ( Rate_9_10, { KBch = 58192; KLdpc = 58320; BchTError = 8; NLdpc = 64800; q = 18; ParityTable = ldpc_9_10N } )
+        ( Rate_1_4, { KBch = 16008; KLdpc = 16200; BchTError = 12; NLdpc = 64800; q = 135; AccTable = ldpc_1_4N } )
+        ( Rate_1_3, { KBch = 21408; KLdpc = 21600; BchTError = 12; NLdpc = 64800; q = 120; AccTable = ldpc_1_3N } )
+        ( Rate_2_5, { KBch = 25728; KLdpc = 25920; BchTError = 12; NLdpc = 64800; q = 108; AccTable = ldpc_2_5N } )
+        ( Rate_1_2, { KBch = 32208; KLdpc = 32400; BchTError = 12; NLdpc = 64800; q = 90; AccTable = ldpc_1_2N } )
+        ( Rate_3_5, { KBch = 38688; KLdpc = 38880; BchTError = 12; NLdpc = 64800; q = 72; AccTable = ldpc_3_5N } )
+        ( Rate_2_3, { KBch = 43040; KLdpc = 43200; BchTError = 10; NLdpc = 64800; q = 60; AccTable = ldpc_2_3N } )
+        ( Rate_3_4, { KBch = 48408; KLdpc = 48600; BchTError = 12; NLdpc = 64800; q = 45; AccTable = ldpc_3_4N } )
+        ( Rate_4_5, { KBch = 51648; KLdpc = 51840; BchTError = 12; NLdpc = 64800; q = 36; AccTable = ldpc_4_5N } )
+        ( Rate_5_6, { KBch = 53840; KLdpc = 54000; BchTError = 10; NLdpc = 64800; q = 30; AccTable = ldpc_5_6N } )
+        ( Rate_8_9, { KBch = 57472; KLdpc = 57600; BchTError = 8; NLdpc = 64800; q = 20 ; AccTable = ldpc_8_9N } )
+        ( Rate_9_10, { KBch = 58192; KLdpc = 58320; BchTError = 8; NLdpc = 64800; q = 18; AccTable = ldpc_9_10N } )
     ] |> Map.ofList
 
 (*

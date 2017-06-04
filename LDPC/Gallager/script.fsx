@@ -3,6 +3,7 @@
 open System
 open System.Numerics
 open Hamstr.Ldpc.DvbS2
+open Hamstr.Ldpc.DvbS2Tables
 open Hamstr.Demod
 open Hamstr.Ldpc.Decoder
 
