@@ -35,7 +35,7 @@ let makeParityTable () =
 let encode rate frame =
     let codingTableEntry = findLongCodingTableEntry rate
     let nParityBits = codingTableEntry.NLdpc - codingTableEntry.KLdpc
-    let parityTable = Array.create nParityBits 0
+    let parityTable = Array.create nParityBits Unchecked.defaultof<Databit>
     let data = Array.ofSeq frame.data 
     codingTableEntry.AccTable
     |> List.iter (fun line ->
