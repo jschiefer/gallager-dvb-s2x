@@ -6,9 +6,6 @@ open System.Numerics
 open Hamstr.Ldpc.DvbS2
 open Hamstr.Demod
 
-// Modulo2-addition operator 
-let inline (<+>) a b = (a + b) &&& 1
-
 // Go through the whole table and add the info bit to the relevant acumulators.
 // Array index is the index of the parity bit, the contents are a list of 
 // all the data bits that go into that parity bit.
@@ -45,9 +42,7 @@ let encode rate frame =
             |> List.iter (fun m ->
                 let parityIndex = (x + m * codingTableEntry.q) % nParityBits
                 let dataIndex = 0
-                parityTable.[parityIndex] <- parityTable.[parityIndex] <+> data.[dataIndex])))
-
-    ()
+                parityTable.[parityIndex] <- parityTable.[parityIndex])))
 
 /// LDPC-decode the frame (which is an array of tuples of bit and LLR)
 let decode rate frame =

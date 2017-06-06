@@ -8,16 +8,21 @@ type LdpcCode =
     | Rate_1_4 | Rate_1_3 | Rate_2_5 | Rate_1_2 | Rate_3_5 | Rate_2_3 
     | Rate_3_4 | Rate_4_5 | Rate_5_6 | Rate_8_9 | Rate_9_10
 
-type IDatabit<'T> = 
+// Generic definition for all the operations that LLR-like types need to support
+type ILLR<'T> = 
     abstract member AddModulo2 : 'T -> 'T -> 'T 
+    abstract member (<+>) : 'T -> 'T -> 'T 
 
 // How we describe a databit (LLR, effectively)
 // This is not what we want. This should be a bit, or an int, or an LLR (double) or 
 // an LLR (6-bit int)
-type Databit = 
-    { bitster : (byte * float) }
-    interface IDatabit<Databit> with
-        member x.AddModulo2 a b = a + b
+type FloatLLR = 
+    { llr : float }
+    interface ILLR<FloatLLR> with
+        member x.AddModulo2 a b = a 
+
+type Databit =
+    (byte * float)
 
 type FrameType =
     | Short | Medium | Long 
