@@ -36,7 +36,7 @@ let readFrame fileType frameType modcod reader =
             |> Seq.collect (fun _ -> readSymbol reader modcod.Modulation)
         | BitFile ->
             [ 1 .. frameLength ] 
-            |> Seq.map (fun _ -> (reader.ReadByte(), 0.0))
+            |> Seq.map (fun _ -> FloatLLR.Create(reader.ReadByte()))
         |> List.ofSeq
     Some({ frameType = frameType; ldpcCode = modcod.LdpcRate; data = sequence; parity = None })
 

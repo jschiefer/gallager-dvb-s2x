@@ -50,7 +50,7 @@ let demodulateSymbol (noiseVariance : float) (modulation : Modulation) (signal :
             log(s0 / s1)
 
         // Our work here is done.
-        (outputBit, llr)
+        FloatLLR.Create(llr)
 
     [ (bitsPerSymbol modulation - 1) .. -1 .. 0 ] |> Seq.map computeExactLlr
 

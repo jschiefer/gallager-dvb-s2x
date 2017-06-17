@@ -8,21 +8,20 @@ type LdpcCode =
     | Rate_1_4 | Rate_1_3 | Rate_2_5 | Rate_1_2 | Rate_3_5 | Rate_2_3 
     | Rate_3_4 | Rate_4_5 | Rate_5_6 | Rate_8_9 | Rate_9_10
 
-// Generic definition for all the operations that LLR-like types need to support
-type ILLR<'T> = 
-    abstract member AddModulo2 : 'T -> 'T -> 'T 
-    abstract member (<+>) : 'T -> 'T -> 'T 
-
 // How we describe a databit (LLR, effectively)
-// This is not what we want. This should be a bit, or an int, or an LLR (double) or 
-// an LLR (6-bit int)
 type FloatLLR = 
-    { llr : float }
-    interface ILLR<FloatLLR> with
-        member x.AddModulo2 a b = a 
+    | LLR of float
 
-type Databit =
-    (byte * float)
+    static member (<+>) (a : FloatLLR, b: FloatLLR) = a 
+    static member Create(b : byte) = 
+        match b with
+        | 0uy -> LLR(-1.0)
+        | _ -> LLR(1.0)
+    static member Create(b : bool) = 
+        match b with
+        | false -> LLR(-1.0)
+        | true -> LLR(1.0)
+    static member Create(f : float) = LLR(f)
 
 type FrameType =
     | Short | Medium | Long 
@@ -34,8 +33,8 @@ type FrameType =
 type FECFRAME = {
     frameType : FrameType
     ldpcCode : LdpcCode
-    data : seq<Databit>
-    parity : seq<Databit> option
+    data : seq<FloatLLR>
+    parity : seq<FloatLLR> option
 }
 
 let (|LongFrame|MediumFrame|ShortFrame|Invalid|) (frame : FECFRAME) = 
