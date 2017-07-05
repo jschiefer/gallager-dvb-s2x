@@ -28,17 +28,30 @@ let readSymbol reader modulation =
 
 let readFrame fileType frameType modcod reader =
     let frameLength = frameType |> FrameType.BitLength
-    let sequence = 
+    let codingTableEntry = findCodingTableEntry frameType modcod.LdpcRate
+    let nDataBits = codingTableEntry.KLdpc
+    let nParityBits = codingTableEntry.NLdpc - nDataBits
+
+    let (data, parity) = 
         match fileType with
         | IqFile ->
-            let nSamplesToRead = frameLength / bitsPerSymbol modcod.Modulation
-            [ 1 .. nSamplesToRead ] 
-            |> Seq.collect (fun _ -> readSymbol reader modcod.Modulation)
+            let bps  = bitsPerSymbol modcod.Modulation
+            let data =
+                [ 1 .. nDataBits / bps ] 
+                |> Seq.collect (fun _ -> readSymbol reader modcod.Modulation)
+            let parity = 
+                [ 1 .. nParityBits / bps ] 
+                |> Seq.collect (fun _ -> readSymbol reader modcod.Modulation)
+            data, parity
         | BitFile ->
-            [ 1 .. frameLength ] 
-            |> Seq.map (fun _ -> FloatLLR.Create(reader.ReadByte()))
-        |> List.ofSeq
-    Some({ frameType = frameType; ldpcCode = modcod.LdpcRate; data = sequence; parity = None })
+            let data =
+                [ 1 .. nDataBits ] 
+                |> Seq.map (fun _ -> FloatLLR.Create(reader.ReadByte()))
+            let parity =
+                [ 1 .. nParityBits ] 
+                |> Seq.map (fun _ -> FloatLLR.Create(reader.ReadByte()))
+            data, parity
+    Some({ frameType = frameType; ldpcCode = modcod.LdpcRate; data = data; parity = Some(parity) })
 
 let readTestFile fileType fileName frameType modcod =
     use stream = File.OpenRead(fileName)

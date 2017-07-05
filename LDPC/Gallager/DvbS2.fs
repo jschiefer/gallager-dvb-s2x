@@ -143,5 +143,8 @@ let ModCodLookup =
         ( 28uy, { Modulation = M_32APSK_4_12_16; LdpcRate = Rate_9_10 } );
     ] |> Map.ofList
 
-let findLongCodingTableEntry rate =
-    longCodingTable.[rate]
+let findCodingTableEntry frameType rate =
+    match frameType with
+    | Long -> longCodingTable.[rate]
+
+let findLongCodingTableEntry = findCodingTableEntry Long
