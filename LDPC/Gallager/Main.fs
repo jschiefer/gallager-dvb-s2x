@@ -3,6 +3,7 @@
 open System
 open System.IO
 open System.Numerics
+open Hamstr.Ldpc.Math
 open Hamstr.Ldpc.DvbS2
 open Hamstr.Demod
 open Hamstr.Ldpc.Decoder
@@ -51,7 +52,7 @@ let readFrame fileType frameType modcod reader =
                 [ 1 .. nParityBits ] 
                 |> Seq.map (fun _ -> FloatLLR.Create(reader.ReadByte()))
             data, parity
-    Some({ frameType = frameType; ldpcCode = modcod.LdpcRate; data = data; parity = Some(parity) })
+    Some({ frameType = frameType; ldpcCode = modcod.LdpcRate; data = Array.ofSeq data; parity = Some(Array.ofSeq parity) })
 
 let readTestFile fileType fileName frameType modcod =
     use stream = File.OpenRead(fileName)
@@ -60,10 +61,12 @@ let readTestFile fileType fileName frameType modcod =
 
 let checkForBitErrors referenceFrame frame =
     let comparer a b =
-        if fst a = fst b then 0 else 1
+        // TODO: Convert to boolean
+        printfn "reference: %A frame %A" a b
+        if a = b then 0 else 1
 
-    let foo = frame |> List.compareWith comparer referenceFrame
-    ()
+    frame 
+    |> Seq.compareWith comparer referenceFrame
 
 [<EntryPoint>]
 let main argv =
@@ -75,7 +78,11 @@ let main argv =
         match frame with
         | Some(x) -> decode Rate_1_2 x
         | _ -> []
+    let foo = checkForBitErrors referenceFrame.Value.data frame.Value.data
+    printfn "Comparison result is %A" foo
+    (*
     let a = makeParityTable () 
     [0 .. 5] |> List.iteri (fun x i -> printfn "a.[%d] = %A" i x)
+    *)
 
     0

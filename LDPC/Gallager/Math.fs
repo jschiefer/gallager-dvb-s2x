@@ -1,19 +1,6 @@
-(*
-#r "bin/Debug/netcoreapp1.1/Gallager.dll"
+module Hamstr.Ldpc.Math
 
-open System
-open System.Numerics
-open Hamstr.Ldpc.Math
-open Hamstr.Ldpc.DvbS2
-open Hamstr.Ldpc.DvbS2Tables
-open Hamstr.Demod
-open Hamstr.Ldpc.Decoder
-*)
-
-// TODO:
-// - Implement AsBoolean
-// - Properly implement the modulo-2 addition
-
+// How we describe a databit (LLR, effectively)
 type FloatLLR = 
     | LLR of float
 
@@ -27,7 +14,6 @@ type FloatLLR =
         | false -> LLR(-1.0)
         | true -> LLR(1.0)
     static member Create(f : float) = LLR(f)
+    // TODO: Boolean conversion
     // static member AsBoolean(a : FloatLLR) = a.LLR > 0.0;
         
-
- let a = LLR(-2.0)

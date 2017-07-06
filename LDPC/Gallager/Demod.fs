@@ -2,6 +2,7 @@ module Hamstr.Demod
 
 open System
 open System.Numerics
+open Hamstr.Ldpc.Math
 open Hamstr.Ldpc.DvbS2
 
 /// Determine the number of bits per symbol for a given modulation type

@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp1.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Math.fs" />
     <Compile Include="DvbS2Tables.fs" />
     <Compile Include="DvbS2.fs" />
     <Compile Include="Demod.fs" />

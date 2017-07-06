@@ -2,26 +2,12 @@ module Hamstr.Ldpc.DvbS2
 
 open System
 open System.Numerics
+open Hamstr.Ldpc.Math
 open Hamstr.Ldpc.DvbS2Tables
 
 type LdpcCode = 
     | Rate_1_4 | Rate_1_3 | Rate_2_5 | Rate_1_2 | Rate_3_5 | Rate_2_3 
     | Rate_3_4 | Rate_4_5 | Rate_5_6 | Rate_8_9 | Rate_9_10
-
-// How we describe a databit (LLR, effectively)
-type FloatLLR = 
-    | LLR of float
-
-    static member (<+>) (a : FloatLLR, b: FloatLLR) = a 
-    static member Create(b : byte) = 
-        match b with
-        | 0uy -> LLR(-1.0)
-        | _ -> LLR(1.0)
-    static member Create(b : bool) = 
-        match b with
-        | false -> LLR(-1.0)
-        | true -> LLR(1.0)
-    static member Create(f : float) = LLR(f)
 
 type FrameType =
     | Short | Medium | Long 
@@ -33,10 +19,9 @@ type FrameType =
 type FECFRAME = {
     frameType : FrameType
     ldpcCode : LdpcCode
-    data : seq<FloatLLR>
-    parity : seq<FloatLLR> option
+    data : array<FloatLLR>
+    parity : array<FloatLLR> option
 }
-
 let (|LongFrame|MediumFrame|ShortFrame|Invalid|) (frame : FECFRAME) = 
     match frame.data |> Seq.length with
     | 16200 -> ShortFrame
@@ -53,7 +38,6 @@ type CodingTableEntry = {
     AccTable : int list list
     q : int         
 }
-
 let longCodingTable = 
     [
         ( Rate_1_4, { KBch = 16008; KLdpc = 16200; BchTError = 12; NLdpc = 64800; q = 135; AccTable = ldpc_1_4N } )
