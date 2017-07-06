@@ -12,3 +12,14 @@ let a = FloatLLR -2.1
 let b = FloatLLR 1.3
 
 a <+> b
+
+type Foo =
+    | Foo of float
+    member x.ToFloat = 
+        let (Foo a) = x in a
+    member x.ToFloat' =
+        match x with
+        | Foo a -> a
+
+let c = Foo(1.2)
+c.ToFloat'

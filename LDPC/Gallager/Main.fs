@@ -62,7 +62,7 @@ let readTestFile fileType fileName frameType modcod =
 let checkForBitErrors referenceFrame frame =
     let comparer (a:FloatLLR) (b:FloatLLR) =
         printfn "reference: %A frame %A" a b
-        if a.ToBool() = b.ToBool() then 0 else 1
+        if a.ToBool = b.ToBool then 0 else 1
 
     frame 
     |> Seq.compareWith comparer referenceFrame
