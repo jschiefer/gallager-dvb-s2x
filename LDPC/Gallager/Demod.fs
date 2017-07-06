@@ -2,7 +2,7 @@ module Hamstr.Demod
 
 open System
 open System.Numerics
-open Hamstr.Ldpc.Math
+open FSharp.Numerics
 open Hamstr.Ldpc.DvbS2
 
 /// Determine the number of bits per symbol for a given modulation type
@@ -41,17 +41,11 @@ let demodulateSymbol (noiseVariance : float) (modulation : Modulation) (signal :
             | 0uy -> (s0 + contribution, s1)
             | _ -> (s0, s1 + contribution)
 
-        let outputBit = extractBit symbol n
-        let llr = 
-            let (s0, s1) =
-                errors 
-                |> Seq.map (fun d -> (n, d))
-                |> Seq.fold accumulateError  (0.0, 0.0)
-            // This is the "L" in "LLR". Wait, what?
-            log(s0 / s1)
-
-        // Our work here is done.
-        FloatLLR.Create(llr)
+        let (s0, s1) =
+            errors 
+            |> Seq.map (fun d -> (n, d))
+            |> Seq.fold accumulateError  (0.0, 0.0)
+        log(s0 / s1) |> FloatLLR
 
     [ (bitsPerSymbol modulation - 1) .. -1 .. 0 ] |> Seq.map computeExactLlr
 

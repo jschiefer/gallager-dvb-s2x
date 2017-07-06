@@ -2,7 +2,7 @@ module Hamstr.Ldpc.DvbS2
 
 open System
 open System.Numerics
-open Hamstr.Ldpc.Math
+open FSharp.Numerics
 open Hamstr.Ldpc.DvbS2Tables
 
 type LdpcCode = 

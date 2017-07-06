@@ -3,7 +3,7 @@
 open System
 open System.IO
 open System.Numerics
-open Hamstr.Ldpc.Math
+open FSharp.Numerics
 open Hamstr.Ldpc.DvbS2
 open Hamstr.Demod
 open Hamstr.Ldpc.Decoder
@@ -60,10 +60,9 @@ let readTestFile fileType fileName frameType modcod =
     readFrame fileType frameType modcod reader 
 
 let checkForBitErrors referenceFrame frame =
-    let comparer a b =
-        // TODO: Convert to boolean
+    let comparer (a:FloatLLR) (b:FloatLLR) =
         printfn "reference: %A frame %A" a b
-        if a = b then 0 else 1
+        if a.ToBool() = b.ToBool() then 0 else 1
 
     frame 
     |> Seq.compareWith comparer referenceFrame
