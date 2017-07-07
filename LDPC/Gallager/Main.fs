@@ -61,7 +61,6 @@ let readTestFile fileType fileName frameType modcod =
 
 let checkForBitErrors referenceFrame frame =
     let comparer (a:FloatLLR) (b:FloatLLR) =
-        printfn "reference: %A frame %A" a b
         if a.ToBool = b.ToBool then 0 else 1
 
     frame 
@@ -73,11 +72,13 @@ let main argv =
     let modcod = ModCodLookup.[testPls]
     let frame = readTestFile IqFile iqDataFileName Long modcod
     let referenceFrame = readTestFile BitFile bitFileName Long modcod
+    (*
     let decodedFrame = 
         match frame with
         | Some(x) -> decode Rate_1_2 x
         | _ -> []
-    let foo = checkForBitErrors referenceFrame.Value.data frame.Value.data
+    *)
+    let foo = checkForBitErrors referenceFrame.Value.parity.Value frame.Value.parity.Value
     printfn "Comparison result is %A" foo
     (*
     let a = makeParityTable () 

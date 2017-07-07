@@ -6,13 +6,13 @@ type FloatLLR =
 
     static member Create(b : byte) = 
         match b with
-        | 0uy -> FloatLLR(-1.0)
-        | _ -> FloatLLR(1.0)
+        | 0uy -> FloatLLR(1.0)
+        | _ -> FloatLLR(-1.0)
 
     static member Create(b : bool) = 
         match b with
-        | false -> FloatLLR(-1.0)
-        | true -> FloatLLR(1.0)
+        | false -> FloatLLR(1.0)
+        | true -> FloatLLR(-1.0)
 
     static member Create(f : float) = FloatLLR(f)
         
