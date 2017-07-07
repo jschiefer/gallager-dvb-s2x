@@ -52,7 +52,7 @@ let readFrame fileType frameType modcod reader =
                 [ 1 .. nParityBits ] 
                 |> Seq.map (fun _ -> FloatLLR.Create(reader.ReadByte()))
             data, parity
-    Some({ frameType = frameType; ldpcCode = modcod.LdpcRate; data = Array.ofSeq data; parity = Some(Array.ofSeq parity) })
+    { frameType = frameType; ldpcCode = modcod.LdpcRate; data = Array.ofSeq data; parity = Array.ofSeq parity }
 
 let readTestFile fileType fileName frameType modcod =
     use stream = File.OpenRead(fileName)
@@ -72,13 +72,7 @@ let main argv =
     let modcod = ModCodLookup.[testPls]
     let frame = readTestFile IqFile iqDataFileName Long modcod
     let referenceFrame = readTestFile BitFile bitFileName Long modcod
-    (*
-    let decodedFrame = 
-        match frame with
-        | Some(x) -> decode Rate_1_2 x
-        | _ -> []
-    *)
-    let foo = checkForBitErrors referenceFrame.Value.parity.Value frame.Value.parity.Value
+    let foo = checkForBitErrors referenceFrame.parity frame.parity
     printfn "Comparison result is %A" foo
     (*
     let a = makeParityTable () 

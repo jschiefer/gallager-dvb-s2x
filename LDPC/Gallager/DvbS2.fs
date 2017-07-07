@@ -20,7 +20,7 @@ type FECFRAME = {
     frameType : FrameType
     ldpcCode : LdpcCode
     data : array<FloatLLR>
-    parity : array<FloatLLR> option
+    parity : array<FloatLLR>
 }
 let (|LongFrame|MediumFrame|ShortFrame|Invalid|) (frame : FECFRAME) = 
     match frame.data |> Seq.length with
