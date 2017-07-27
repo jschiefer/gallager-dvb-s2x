@@ -59,12 +59,11 @@ let readTestFile fileType fileName frameType modcod =
     use reader = new BinaryReader(stream)
     readFrame fileType frameType modcod reader 
 
-let checkForBitErrors referenceFrame frame =
+let checkForBitErrors refSeq otherSeq =
     let comparer (a:FloatLLR) (b:FloatLLR) =
         if a.ToBool = b.ToBool then 0 else 1
-
-    frame 
-    |> Seq.compareWith comparer referenceFrame
+    otherSeq 
+    |> Seq.compareWith comparer refSeq
 
 [<EntryPoint>]
 let main argv =
@@ -72,8 +71,13 @@ let main argv =
     let modcod = ModCodLookup.[testPls]
     let frame = readTestFile IqFile iqDataFileName Long modcod
     let referenceFrame = readTestFile BitFile bitFileName Long modcod
-    let foo = checkForBitErrors referenceFrame.parity frame.parity
-    printfn "Comparison result is %A" foo
+    let comp = checkForBitErrors referenceFrame.parity frame.parity
+    printfn "Comparison result is %A" comp
+
+    let parity = encode modcod.LdpcRate frame
+    let comp = checkForBitErrors frame.parity parity
+    printfn "Encoding: comparison result is %A" comp
+    
     (*
     let a = makeParityTable () 
     [0 .. 5] |> List.iteri (fun x i -> printfn "a.[%d] = %A" i x)
