@@ -14,8 +14,11 @@ type FloatLLR =
         | false -> FloatLLR(1.0)
         | true -> FloatLLR(-1.0)
 
-    static member Create(f : float) = FloatLLR(f)
+    static member Create(f : float) = FloatLLR f
         
+    static member Undecided() = FloatLLR 0.0
+    static member Zero = FloatLLR.Create(false)
+    static member One = FloatLLR.Create(true)
     member x.ToFloat = let (FloatLLR n) = x in n
 
     member x.ToBool = x.ToFloat > 0.0

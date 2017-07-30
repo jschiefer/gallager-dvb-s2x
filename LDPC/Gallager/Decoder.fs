@@ -1,8 +1,5 @@
 ﻿module Hamstr.Ldpc.Decoder
 
-open System
-open System.IO
-open System.Numerics
 open FSharp.Numerics
 open Hamstr.Ldpc.DvbS2
 open Hamstr.Demod
@@ -13,21 +10,21 @@ open Hamstr.Demod
 let encode rate frame =
     let codingTableEntry = findLongCodingTableEntry rate
     let nParityBits = codingTableEntry.NLdpc - codingTableEntry.KLdpc
-    let parityTable = Array.create nParityBits Unchecked.defaultof<FloatLLR>
+    let parityTable = Array.create nParityBits FloatLLR.Zero
     
     codingTableEntry.AccTable
-    |> List.iter (fun line ->       // line in the parity table
+    |> List.iteri (fun i line ->       // line in the parity table
         line 
-        |> List.iter (fun bitAddress ->      // Line item
+        |> List.iter (fun x ->      // Line item
             [0..359] 
             |> List.iter (fun m ->
-                let parityIndex = (bitAddress + m * codingTableEntry.q) % nParityBits
-                let dataIndex = 0
-                parityTable.[parityIndex] <- parityTable.[parityIndex])))
+                let parityIndex = (x + m * codingTableEntry.q) % nParityBits
+                let dataIndex = i * 360 + m
+                printfn "parityIndex = %A, dataIndex = %A" parityIndex dataIndex
+                parityTable.[parityIndex] <- parityTable.[parityIndex] <+> frame.data.[dataIndex])))
+    // TODO: Iterate over the table and do the concatenation
 
-    let data = Array.ofSeq frame.data 
-
-
+    parityTable
 
 /// LDPC-decode the frame (which is an array of tuples of bit and LLR)
 let decode rate frame =
