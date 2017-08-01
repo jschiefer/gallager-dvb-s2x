@@ -7,24 +7,28 @@ open Hamstr.Demod
 // Go through the whole table and add the info bit to the relevant acumulators.
 // Array index is the index of the parity bit, the contents are a list of 
 // all the data bits that go into that parity bit.
-let encode rate frame =
-    let codingTableEntry = findLongCodingTableEntry rate
+let encode ldpcCode frame =
+    let codingTableEntry = findLongCodingTableEntry ldpcCode
     let nParityBits = codingTableEntry.NLdpc - codingTableEntry.KLdpc
-    let parityTable = Array.create nParityBits FloatLLR.Zero
+    let parityBits = Array.create nParityBits FloatLLR.Zero
     
     codingTableEntry.AccTable
-    |> List.iteri (fun i line ->       // line in the parity table
-        line 
-        |> List.iter (fun x ->      // Line item
-            [0..359] 
-            |> List.iter (fun m ->
-                let parityIndex = (x + m * codingTableEntry.q) % nParityBits
-                let dataIndex = i * 360 + m
-                printfn "parityIndex = %A, dataIndex = %A" parityIndex dataIndex
-                parityTable.[parityIndex] <- parityTable.[parityIndex] <+> frame.data.[dataIndex])))
-    // TODO: Iterate over the table and do the concatenation
+    |> List.iteri (fun blockNo line ->
+        // Apply each line in the accumulator table to 360 bits
+        [0..359] 
+        |> List.iter (fun blockOffset ->
+            let dataOffset = blockNo * 360 + blockOffset
+            let dataBit = frame.data.[dataOffset]
+            line
+            |> List.iter (fun accAddress -> 
+                let parityIndex = (accAddress + (dataOffset % 360)) % nParityBits
+                parityBits.[parityIndex] <- parityBits.[parityIndex] <+> dataBit)))
 
-    parityTable
+    [1 .. nParityBits - 1]
+    |> List.iter (fun i -> parityBits.[i] <- parityBits.[i] <+> parityBits.[i - 1])
+
+    parityBits
+    
 
 /// LDPC-decode the frame (which is an array of tuples of bit and LLR)
 let decode rate frame =

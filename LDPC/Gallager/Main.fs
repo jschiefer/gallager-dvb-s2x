@@ -65,18 +65,24 @@ let checkForBitErrors refSeq otherSeq =
     otherSeq 
     |> Seq.compareWith comparer refSeq
 
+let printParity (refArray: FloatLLR array) (otherArray : FloatLLR array) = 
+    Array.zip refArray otherArray
+    |> Array.iteri (fun i (a, b) -> 
+        if a.ToBool = b.ToBool then () else printfn "Difference in element %A" i)
+
 [<EntryPoint>]
 let main argv =
     let frameLength = Long |> FrameType.BitLength 
     let modcod = ModCodLookup.[testPls]
     let frame = readTestFile IqFile iqDataFileName Long modcod
     let referenceFrame = readTestFile BitFile bitFileName Long modcod
-    let comp = checkForBitErrors referenceFrame.parity frame.parity
-    printfn "Comparison result is %A" comp
+    // let comp = checkForBitErrors referenceFrame.parity frame.parity
+    // printfn "Comparison result is %A" comp
 
     let parity = encode modcod.LdpcRate frame
-    let comp = checkForBitErrors frame.parity parity
-    printfn "Encoding: comparison result is %A" comp
+    printParity frame.parity parity
+    // let comp = checkForBitErrors frame.parity parity
+    // printfn "Encoding: comparison result is %A" comp
     
     (*
     let a = makeParityTable () 
