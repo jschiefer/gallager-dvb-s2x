@@ -57,7 +57,12 @@ You will be asked to set a password for the access via VNC.
 Start a container, using the image that we just built. For example, under Linux:
 
 ```
-$ docker run -it --rm --privileged -p 5901:5901 -e USER=amsat -v ~/Docker:/home/amsat/Docker p4g:0.7 /bin/bash -c "vncserver :1 -geometry 1920x1080 -depth 24 && tail -F /root/.vnc/*.log"
+docker run -it --rm --privileged -p 5901:5901 -e USER=amsat -v ~/Docker:/home/amsat/Docker p4g:0.7 /bin/bash -c "vncserver :1 -geometry 1920x1080 -depth 24 && tail -F /root/.vnc/*.log"
+```
+
+Or, under Windows:
+```
+docker run -it --rm --privileged -p 5901:5901 -e USER=amsat -v C:/home/jan p4g:0.7 /bin/bash -c "vncserver :1 -geometry 1920x1080 -depth 24 && tail -F /root/.vnc/*.log"
 ```
 
 This starts the VNC server in the image and exposes it on port 5901. Prileged access is
