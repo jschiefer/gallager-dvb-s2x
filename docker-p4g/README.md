@@ -5,18 +5,27 @@ This is a based on Stefan Wunsch's https://github.com/stwunsch/docker-pybombs-gn
 The docker image provides a 3.7.10 version of gnu radio, the UHD driver and a special collection of Phase4Ground 
 blocks. The image is based on Ubuntu 14.04.
 
+TODO:
+-----
+- How does the override work for pybomb definitions?
+- Add gr-iio, limesuite in new versions
+- Add whatever else might be required for LimeSDR
+- Upgrade to Ubuntu 16.04
+- Push to Docker repository
+- Run ldconfig after pybombs
+
 Build container
 -------------
 To build the container, clone this repository, change directory into to `docker-p4g` and build the docker image from it:
 ```
-$ docker build -t p4g:0.6 .
+$ docker build -t p4g:0.7 .
 ```
-This will create an image with the name p4g and the version tag 0.6, which you should be able to see 
-in your image list:
+This will run for a while, and eventually create an image with the name p4g and the version tag 0.7, which you 
+should be able to see in your image list:
 ```
 $ docker images
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-p4g                 0.6                 271950d2732a        8 weeks ago         2.47 GB
+p4g                 0.7                 271950d2732a        8 weeks ago         2.47 GB
 ubuntu              14.04               b969ab9f929b        2 months ago        188 MB
 
 ```
@@ -45,10 +54,10 @@ part.
 
 You will be asked to set a password for the access via VNC.
 
-Start a container, using the image that we just built:
+Start a container, using the image that we just built. For example, under Linux:
 
 ```
-$ docker run -it --rm --privileged -p 5901:5901 -e USER=amsat -v ~/Docker:/home/amsat/Docker p4g:0.6 /bin/bash -c "vncserver :1 -geometry 1920x1080 -depth 24 && tail -F /root/.vnc/*.log"
+$ docker run -it --rm --privileged -p 5901:5901 -e USER=amsat -v ~/Docker:/home/amsat/Docker p4g:0.7 /bin/bash -c "vncserver :1 -geometry 1920x1080 -depth 24 && tail -F /root/.vnc/*.log"
 ```
 
 This starts the VNC server in the image and exposes it on port 5901. Prileged access is
