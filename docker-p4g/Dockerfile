@@ -42,8 +42,8 @@ RUN pybombs -p ${PyBOMBS_prefix} -v install "gr-iio" && rm -rf ${PyBOMBS_init}/s
 RUN pybombs -p ${PyBOMBS_prefix} -v install "gr-osmosdr" && rm -rf ${PyBOMBS_init}/src/*
 RUN pybombs -p ${PyBOMBS_prefix} -v install "limesuite" && rm -rf ${PyBOMBS_init}/src/*
 RUN pybombs -p ${PyBOMBS_prefix} -v install "rtl-sdr" && rm -rf ${PyBOMBS_init}/src/*
-RUN pybombs -p ${PyBOMBS_prefix} -v install --deps-only "gnuradio-stable" && rm -rf ${PyBOMBS_init}/src/*
-RUN pybombs -p ${PyBOMBS_prefix} -v install --no-deps "gnuradio-stable" && rm -rf ${PyBOMBS_init}/src/*
+RUN pybombs -p ${PyBOMBS_prefix} -v install --deps-only "gnuradio" && rm -rf ${PyBOMBS_init}/src/*
+RUN pybombs -p ${PyBOMBS_prefix} -v install --no-deps "gnuradio" && rm -rf ${PyBOMBS_init}/src/*
 RUN pybombs -p ${PyBOMBS_prefix} -v install "my-dvbs2" && rm -rf ${PyBOMBS_init}/src/*
 
 # Install LXDE and VNC server
