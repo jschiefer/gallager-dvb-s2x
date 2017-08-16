@@ -5,7 +5,7 @@ FROM ubuntu:14.04
 
 # Set prefix variables
 ENV TheUser amsat
-ENV TheHomeDir /home/${TheUser}
+ENV TheHomeDir /opt
 ENV PyBOMBS_prefix myprefix
 ENV PyBOMBS_init ${TheHomeDir}/pybombs
 
@@ -19,6 +19,8 @@ RUN apt-get install -y \
         python-yaml \
         python-apt \
         python-setuptools \
+        usbutils \
+        screen \
         git-core
 
 # Install PyBOMBS
@@ -46,7 +48,7 @@ RUN pybombs -p ${PyBOMBS_prefix} -v install "rtl-sdr" && rm -rf ${PyBOMBS_init}/
 RUN pybombs -p ${PyBOMBS_prefix} -v install --deps-only "gnuradio" && rm -rf ${PyBOMBS_init}/src/*
 RUN pybombs -p ${PyBOMBS_prefix} -v install --no-deps "gnuradio" && rm -rf ${PyBOMBS_init}/src/*
 RUN pybombs -p ${PyBOMBS_prefix} -v install "my-dvbs2" && rm -rf ${PyBOMBS_init}/src/*
-RUN ldconfig
+RUN ldconfig ${PyBOMBS_init}/lib ${PyBOMBS_init}/lib/x86_64-linux-gnu
 
 # Install LXDE and VNC server
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y lxde-core lxterminal tightvncserver

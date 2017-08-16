@@ -7,12 +7,10 @@ blocks. The image is based on Ubuntu 14.04.
 
 TODO:
 -----
-- How does the override work for pybomb definitions?
-- Add gr-iio, limesuite in new versions
-- Add whatever else might be required for LimeSDR
-- Upgrade to Ubuntu 16.04
+- Test with LimeSDR
+- Upgrade to Ubuntu 16.04?
 - Push to Docker repository
-- Run ldconfig after pybombs
+- Provide udev files for limesdr, rtlsdr, usrp and pluto
 
 Build container
 -------------
@@ -54,15 +52,16 @@ part.
 
 You will be asked to set a password for the access via VNC.
 
-Start a container, using the image that we just built. For example, under Linux:
+Start a container, using the image that we just built. You will get logged in as user "amsat".
+For example, under Linux, the invocation would be:
 
 ```
-docker run -it --rm --privileged -p 5901:5901 -e USER=amsat -v ~/Docker:/home/amsat/Docker p4g:0.7 /bin/bash -c "vncserver :1 -geometry 1920x1080 -depth 24 && tail -F /root/.vnc/*.log"
+docker run -it --rm --privileged -p 5901:5901 -e USER=amsat -v ~/Docker:/home/amsat/Docker p4g:0.7 /bin/bash -c "vncserver :1 -geometry 1920x1080 -depth 24 && tail -F /home/amsat/.vnc/*.log"
 ```
 
 Or, under Windows:
 ```
-docker run -it --rm --privileged -p 5901:5901 -e USER=amsat -v C:/home/jan p4g:0.7 /bin/bash -c "vncserver :1 -geometry 1920x1080 -depth 24 && tail -F /root/.vnc/*.log"
+docker run -it --rm --privileged -p 5901:5901 -e USER=amsat -v C:/home/jan p4g:0.7 /bin/bash -c "vncserver :1 -geometry 1920x1080 -depth 24 && tail -F /home/amsat/.vnc/*.log"
 ```
 
 This starts the VNC server in the image and exposes it on port 5901. Prileged access is
