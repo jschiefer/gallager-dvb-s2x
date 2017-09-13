@@ -21,7 +21,7 @@ let encode ldpcCode frame =
             let dataBit = frame.data.[dataOffset]
             line
             |> List.iter (fun accAddress -> 
-                let parityIndex = (accAddress + (dataOffset % 360)) % nParityBits
+                let parityIndex = (accAddress + (dataOffset % 360) * codingTableEntry.q ) % nParityBits
                 parityBits.[parityIndex] <- parityBits.[parityIndex] <+> dataBit)))
 
     [1 .. nParityBits - 1]
