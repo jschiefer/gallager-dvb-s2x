@@ -45,7 +45,7 @@ let demodulateSymbol (noiseVariance : float) (modulation : Modulation) (signal :
             errors 
             |> Seq.map (fun d -> (n, d))
             |> Seq.fold accumulateError  (0.0, 0.0)
-        log(s0 / s1) |> FloatLLR
+        log(s0 / s1) |> LLR
 
     [ (bitsPerSymbol modulation - 1) .. -1 .. 0 ] |> Seq.map computeExactLlr
 

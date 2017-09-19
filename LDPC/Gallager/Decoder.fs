@@ -10,7 +10,7 @@ open Hamstr.Demod
 let encode ldpcCode frame =
     let codingTableEntry = findLongCodingTableEntry ldpcCode
     let nParityBits = codingTableEntry.NLdpc - codingTableEntry.KLdpc
-    let parityBits = Array.create nParityBits FloatLLR.Zero
+    let parityBits = Array.create nParityBits LLR.Zero
     
     codingTableEntry.AccTable
     |> List.iteri (fun blockNo line ->

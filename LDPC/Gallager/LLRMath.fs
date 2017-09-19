@@ -1,33 +1,30 @@
 namespace FSharp.Numerics
 
-// How we describe a databit
-type FloatLLR = 
-    | FloatLLR of float
+// cf. Moon, Todd K.: Error Correction Coding: Mathematical Methods  and Algorithms
+
+type LLR = 
+    | LLR of float
 
     static member Create(b : byte) = 
         match b with
-        | 0uy -> FloatLLR(1.0)
-        | _ -> FloatLLR(-1.0)
+        | 0uy -> LLR(1.0)
+        | _ -> LLR(-1.0)
 
     static member Create(b : bool) = 
         match b with
-        | false -> FloatLLR(1.0)
-        | true -> FloatLLR(-1.0)
+        | false -> LLR(1.0)
+        | true -> LLR(-1.0)
 
-    static member Create(f : float) = FloatLLR f
+    static member Create(f : float) = LLR f
         
-    static member Undecided() = FloatLLR 0.0
-    static member Zero = FloatLLR.Create(false)
-    static member One = FloatLLR.Create(true)
-    member x.ToFloat = let (FloatLLR n) = x in n
+    static member Undecided() = LLR 0.0
+    static member Zero = LLR.Create(false)
+    static member One = LLR.Create(true)
+    member x.ToFloat = let (LLR n) = x in n
 
     member x.ToBool = x.ToFloat > 0.0
         
-    static member (+) (a : FloatLLR, b: FloatLLR) = 
-        // let (FloatLLR a') = a
-        // let (FloatLLR b') = b
-        // FloatLLR (a' + b')
-        let a' = a.ToBool
-        let b' = b.ToBool
-        let c = a' <> b'
-        FloatLLR.Create(c)
+    static member (+) (a : LLR, b: LLR) = 
+        let (LLR a') = a
+        let (LLR b') = b
+        LLR (a' + b')

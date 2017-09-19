@@ -47,10 +47,10 @@ let readFrame fileType frameType modcod reader =
         | BitFile ->
             let data =
                 [ 1 .. nDataBits ] 
-                |> Seq.map (fun _ -> FloatLLR.Create(reader.ReadByte()))
+                |> Seq.map (fun _ -> LLR.Create(reader.ReadByte()))
             let parity =
                 [ 1 .. nParityBits ] 
-                |> Seq.map (fun _ -> FloatLLR.Create(reader.ReadByte()))
+                |> Seq.map (fun _ -> LLR.Create(reader.ReadByte()))
             data, parity
     { frameType = frameType; ldpcCode = modcod.LdpcRate; data = Array.ofSeq data; parity = Array.ofSeq parity }
 
@@ -60,12 +60,12 @@ let readTestFile fileType fileName frameType modcod =
     readFrame fileType frameType modcod reader 
 
 let checkForBitErrors refSeq otherSeq =
-    let comparer (a:FloatLLR) (b:FloatLLR) =
+    let comparer (a:LLR) (b:LLR) =
         if a.ToBool = b.ToBool then 0 else 1
     otherSeq 
     |> Seq.compareWith comparer refSeq
 
-let printParity (refArray: FloatLLR array) (otherArray : FloatLLR array) = 
+let printParity (refArray: LLR array) (otherArray : LLR array) = 
     Array.zip refArray otherArray
     |> Array.iteri (fun i (a, b) -> 
         if a.ToBool = b.ToBool then () else printfn "Difference in element %A" i)
