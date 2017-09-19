@@ -5,15 +5,15 @@ namespace FSharp.Numerics
 type LLR = 
     | LLR of float
 
-    static member Create(b : byte) = 
-        match b with
-        | 0uy -> LLR(1.0)
-        | _ -> LLR(-1.0)
-
     static member Create(b : bool) = 
         match b with
         | false -> LLR(1.0)
         | true -> LLR(-1.0)
+
+    static member Create(b : byte) = 
+        match b with
+        | 0uy -> LLR.Create(false)
+        | _ -> LLR.Create(true)
 
     static member Create(f : float) = LLR f
         
@@ -27,4 +27,5 @@ type LLR =
     static member (+) (a : LLR, b: LLR) = 
         let (LLR a') = a
         let (LLR b') = b
-        LLR (a' + b')
+        LLR.Create(float (sign a' * sign b') * (min (abs a') (abs b')))
+        
