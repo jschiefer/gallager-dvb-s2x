@@ -8,8 +8,8 @@ open Hamstr.Ldpc.DvbS2Tables
 open Hamstr.Demod
 open Hamstr.Ldpc.Decoder
 
-let a = FloatLLR -2.1
-let b = FloatLLR 1.3
+let a = LLR -2.1
+let b = LLR 1.3
 
 a + b
 
@@ -20,8 +20,4 @@ type Foo =
     member x.ToFloat' =
         match x with
         | Foo a -> a
-
-let (FloatLLR a') = a
-let (FloatLLR b') = b
-FloatLLR (a' + b')
 
