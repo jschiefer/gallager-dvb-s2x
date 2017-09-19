@@ -22,10 +22,10 @@ let encode ldpcCode frame =
             line
             |> List.iter (fun accAddress -> 
                 let parityIndex = (accAddress + (dataOffset % 360) * codingTableEntry.q ) % nParityBits
-                parityBits.[parityIndex] <- parityBits.[parityIndex] <+> dataBit)))
+                parityBits.[parityIndex] <- parityBits.[parityIndex] + dataBit)))
 
     [1 .. nParityBits - 1]
-    |> List.iter (fun i -> parityBits.[i] <- parityBits.[i] <+> parityBits.[i - 1])
+    |> List.iter (fun i -> parityBits.[i] <- parityBits.[i] + parityBits.[i - 1])
 
     parityBits
     

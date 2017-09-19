@@ -23,7 +23,7 @@ type FloatLLR =
 
     member x.ToBool = x.ToFloat > 0.0
         
-    static member (<+>) (a : FloatLLR, b: FloatLLR) = 
+    static member (+) (a : FloatLLR, b: FloatLLR) = 
         // let (FloatLLR a') = a
         // let (FloatLLR b') = b
         // FloatLLR (a' + b')

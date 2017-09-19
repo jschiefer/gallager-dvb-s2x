@@ -11,7 +11,7 @@ open Hamstr.Ldpc.Decoder
 let a = FloatLLR -2.1
 let b = FloatLLR 1.3
 
-a <+> b
+a + b
 
 type Foo =
     | Foo of float
@@ -21,5 +21,7 @@ type Foo =
         match x with
         | Foo a -> a
 
-let c = Foo(1.2)
-c.ToFloat'
+let (FloatLLR a') = a
+let (FloatLLR b') = b
+FloatLLR (a' + b')
+
