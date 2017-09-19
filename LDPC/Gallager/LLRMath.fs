@@ -7,23 +7,15 @@ type LLR =
 
     static member Create(b : bool) = 
         match b with
-        | false -> LLR(1.0)
-        | true -> LLR(-1.0)
-
-    static member Create(b : byte) = 
-        match b with
-        | 0uy -> LLR.Create(false)
-        | _ -> LLR.Create(true)
-
+        | true -> LLR(-infinity)
+        | false -> LLR(infinity)
+    static member Create b = LLR.Create(b <> 0uy)
     static member Create(f : float) = LLR f
-        
-    static member Undecided() = LLR 0.0
+    static member Undecided = LLR 0.0
     static member Zero = LLR.Create(false)
     static member One = LLR.Create(true)
     member x.ToFloat = let (LLR n) = x in n
-
     member x.ToBool = x.ToFloat > 0.0
-        
     static member (+) (a : LLR, b: LLR) = 
         let (LLR a') = a
         let (LLR b') = b
