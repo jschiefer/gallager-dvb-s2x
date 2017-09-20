@@ -5,6 +5,7 @@ module Hamstr.Ldpc.DvbS2Tables
 
 /// Parity bit accumulator table, 1/4 rate, long frames
 
+(*
 let ldpc_1_4N =
     [
       [ 16419; 24928; 16609; 17248; 7693; 24997; 42587; 16858; 34921; 21042; 37024; 20692 ];
@@ -173,6 +174,7 @@ let ldpc_2_5N =
       [ 5585; 2037; 4830 ];
       [ 30672; 16927; 14800 ]
      ]
+*)
 
 /// Parity bit accumulator table, 1/2 rate, long frames
 let ldpc_1_2N = 
@@ -269,6 +271,7 @@ let ldpc_1_2N =
         [ 53; 19267; 20113 ]
     ]
 
+(*  
 /// Parity bit accumulator table, 3/5 rate, long frames
 let ldpc_3_5N =
     [ 
@@ -4654,4 +4657,5 @@ let ldpc_1_3M =
       [ 3; 1432; 5674; 2224; 0; 0; 0; 0; 0; 0; 0; 0; 0 ]; 
       [ 3; 11257; 1312; 8453; 0; 0; 0; 0; 0; 0; 0; 0; 0 ]
     ]
+*)
    

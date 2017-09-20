@@ -40,17 +40,17 @@ type CodingTableEntry = {
 }
 let longCodingTable = 
     [
-        ( Rate_1_4, { KBch = 16008; KLdpc = 16200; BchTError = 12; NLdpc = 64800; q = 135; AccTable = ldpc_1_4N } )
-        ( Rate_1_3, { KBch = 21408; KLdpc = 21600; BchTError = 12; NLdpc = 64800; q = 120; AccTable = ldpc_1_3N } )
-        ( Rate_2_5, { KBch = 25728; KLdpc = 25920; BchTError = 12; NLdpc = 64800; q = 108; AccTable = ldpc_2_5N } )
+        // ( Rate_1_4, { KBch = 16008; KLdpc = 16200; BchTError = 12; NLdpc = 64800; q = 135; AccTable = ldpc_1_4N } )
+        // ( Rate_1_3, { KBch = 21408; KLdpc = 21600; BchTError = 12; NLdpc = 64800; q = 120; AccTable = ldpc_1_3N } )
+        // ( Rate_2_5, { KBch = 25728; KLdpc = 25920; BchTError = 12; NLdpc = 64800; q = 108; AccTable = ldpc_2_5N } )
         ( Rate_1_2, { KBch = 32208; KLdpc = 32400; BchTError = 12; NLdpc = 64800; q = 90; AccTable = ldpc_1_2N } )
-        ( Rate_3_5, { KBch = 38688; KLdpc = 38880; BchTError = 12; NLdpc = 64800; q = 72; AccTable = ldpc_3_5N } )
-        ( Rate_2_3, { KBch = 43040; KLdpc = 43200; BchTError = 10; NLdpc = 64800; q = 60; AccTable = ldpc_2_3N } )
-        ( Rate_3_4, { KBch = 48408; KLdpc = 48600; BchTError = 12; NLdpc = 64800; q = 45; AccTable = ldpc_3_4N } )
-        ( Rate_4_5, { KBch = 51648; KLdpc = 51840; BchTError = 12; NLdpc = 64800; q = 36; AccTable = ldpc_4_5N } )
-        ( Rate_5_6, { KBch = 53840; KLdpc = 54000; BchTError = 10; NLdpc = 64800; q = 30; AccTable = ldpc_5_6N } )
-        ( Rate_8_9, { KBch = 57472; KLdpc = 57600; BchTError = 8; NLdpc = 64800; q = 20 ; AccTable = ldpc_8_9N } )
-        ( Rate_9_10, { KBch = 58192; KLdpc = 58320; BchTError = 8; NLdpc = 64800; q = 18; AccTable = ldpc_9_10N } )
+        // ( Rate_3_5, { KBch = 38688; KLdpc = 38880; BchTError = 12; NLdpc = 64800; q = 72; AccTable = ldpc_3_5N } )
+        // ( Rate_2_3, { KBch = 43040; KLdpc = 43200; BchTError = 10; NLdpc = 64800; q = 60; AccTable = ldpc_2_3N } )
+        // ( Rate_3_4, { KBch = 48408; KLdpc = 48600; BchTError = 12; NLdpc = 64800; q = 45; AccTable = ldpc_3_4N } )
+        // ( Rate_4_5, { KBch = 51648; KLdpc = 51840; BchTError = 12; NLdpc = 64800; q = 36; AccTable = ldpc_4_5N } )
+        // ( Rate_5_6, { KBch = 53840; KLdpc = 54000; BchTError = 10; NLdpc = 64800; q = 30; AccTable = ldpc_5_6N } )
+        // ( Rate_8_9, { KBch = 57472; KLdpc = 57600; BchTError = 8; NLdpc = 64800; q = 20 ; AccTable = ldpc_8_9N } )
+        // ( Rate_9_10, { KBch = 58192; KLdpc = 58320; BchTError = 8; NLdpc = 64800; q = 18; AccTable = ldpc_9_10N } )
     ] |> Map.ofList
 
 (*

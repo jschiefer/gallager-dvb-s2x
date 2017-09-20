@@ -76,17 +76,8 @@ let main argv =
     let modcod = ModCodLookup.[testPls]
     let frame = readTestFile IqFile iqDataFileName Long modcod
     let referenceFrame = readTestFile BitFile bitFileName Long modcod
-    // let comp = checkForBitErrors referenceFrame.parity frame.parity
-    // printfn "Comparison result is %A" comp
 
     let parity = encode modcod.LdpcRate frame
     printParity frame.parity parity
-    // let comp = checkForBitErrors frame.parity parity
-    // printfn "Encoding: comparison result is %A" comp
     
-    (*
-    let a = makeParityTable () 
-    [0 .. 5] |> List.iteri (fun x i -> printfn "a.[%d] = %A" i x)
-    *)
-
-    0
+    0   
