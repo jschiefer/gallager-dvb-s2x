@@ -13,6 +13,7 @@ let encode ldpcCode frame =
     let parityBits = Array.create nParityBits LLR.Zero
     
     codingTableEntry.AccTable
+    // Iterate over the lines of the accumulator table
     |> List.iteri (fun blockNo line ->
         // Apply each line in the accumulator table to 360 bits
         [0..359] 
@@ -21,9 +22,10 @@ let encode ldpcCode frame =
             let dataBit = frame.data.[dataOffset]
             line
             |> List.iter (fun accAddress -> 
+                // For each element in the accumulator line, modulo-2 add the data bit to the parity accumulator
                 let parityIndex = (accAddress + (dataOffset % 360) * codingTableEntry.q ) % nParityBits
                 parityBits.[parityIndex] <- parityBits.[parityIndex] + dataBit)))
-
+    // Final step: Add the parity bits to each other
     [1 .. nParityBits - 1]
     |> List.iter (fun i -> parityBits.[i] <- parityBits.[i] + parityBits.[i - 1])
 
@@ -31,7 +33,8 @@ let encode ldpcCode frame =
     
 
 /// LDPC-decode the frame (which is an array of tuples of bit and LLR)
-let decode rate frame =
-    let codingTableEntry = findLongCodingTableEntry rate
+let decode ldpcCode frame =
+    let codingTableEntry = findLongCodingTableEntry ldpcCode
+
 
     [ 0uy; 0uy ]

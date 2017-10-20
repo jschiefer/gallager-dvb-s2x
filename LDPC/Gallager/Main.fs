@@ -77,7 +77,6 @@ let main argv =
     let frame = readTestFile IqFile iqDataFileName Long modcod
     let referenceFrame = readTestFile BitFile bitFileName Long modcod
 
-    let parity = encode modcod.LdpcRate frame
-    printParity frame.parity parity
+    let foo = decode modcod.LdpcRate frame
     
     0   

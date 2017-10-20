@@ -7,17 +7,14 @@ open Hamstr.Ldpc.DvbS2
 open Hamstr.Ldpc.DvbS2Tables
 open Hamstr.Demod
 open Hamstr.Ldpc.Decoder
+open Hamstr.Ldpc.Main
 
-let a = LLR -2.1
-let b = LLR 1.3
+let codingTableEntry = findLongCodingTableEntry Rate_1_2
 
-a + b
+// Compile the connections between data nodes and check nodes
+// The data nodes are all the bits of the message
+// We need a message
+let message = readTestFile IqFile iqDataFileName Long ModCodLookup.[04uy]
 
-type Foo =
-    | Foo of float
-    member x.ToFloat = 
-        let (Foo a) = x in a
-    member x.ToFloat' =
-        match x with
-        | Foo a -> a
+// How are the check nodes determined? Somehow from the accumulator table
 
