@@ -17,6 +17,7 @@ namespace FSharp.Numerics
 // LLR(a) + LLR(b) is equivalent to the LLR of the modulo-2 sum of a and b.
 
 // cf. Moon, Todd K.: Error Correction Coding: Mathematical Methods  and Algorithms
+
 // More useful links on understanding LLR algebra:
 // http://onlinelibrary.wiley.com/doi/10.1002/0471739219.app1/pdf 
 // http://elib.dlr.de/48687/1/main.pdf 
