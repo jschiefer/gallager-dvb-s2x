@@ -29,7 +29,7 @@ let readSymbol reader modulation =
 
 let readFrame fileType frameType modcod reader =
     let frameLength = frameType |> FrameType.BitLength
-    let codingTableEntry = findCodingTableEntry frameType modcod.LdpcRate
+    let codingTableEntry = findCodingTableEntry (frameType, modcod.LdpcRate)
     let nDataBits = codingTableEntry.KLdpc
     let nParityBits = codingTableEntry.NLdpc - nDataBits
 
@@ -77,6 +77,6 @@ let main argv =
     let frame = readTestFile IqFile iqDataFileName Long modcod
     let referenceFrame = readTestFile BitFile bitFileName Long modcod
 
-    let foo = decode modcod.LdpcRate frame
+    let foo = decode (Long, modcod.LdpcRate) frame
     
     0   

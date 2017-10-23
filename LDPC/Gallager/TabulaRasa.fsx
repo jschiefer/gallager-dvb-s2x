@@ -45,13 +45,13 @@ let tablesToProcess =
     ]
 
 let printTable ((t : int [][]), name) = 
-    printfn "let %s =\n\t[|" name
+    printfn "let %s =\n    [|" name
     t |> Array.iter (fun a -> 
         let lineLen = a.[0]
         let shorty = a |> Array.tail |> Array.take lineLen
-        printfn "\t\t%A;" shorty
+        printfn "        %A;" shorty
     )
-    printfn "\t|]"
+    printfn "    |]"
 
 printTable tablesToProcess.[0]
 tablesToProcess |> List.iter printTable

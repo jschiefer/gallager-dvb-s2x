@@ -7,7 +7,7 @@ open Hamstr.Ldpc.DvbS2
 // Array index is the index of the parity bit, the contents are a list of 
 // all the data bits that go into that parity bit.
 let encode ldpcCode frame =
-    let codingTableEntry = findLongCodingTableEntry ldpcCode
+    let codingTableEntry = findCodingTableEntry ldpcCode
     let nParityBits = codingTableEntry.NLdpc - codingTableEntry.KLdpc
     let parityBits = Array.create nParityBits LLR.Zero
     
@@ -32,7 +32,7 @@ let encode ldpcCode frame =
     
 // Compile the connections between data nodes and check nodes
 let makeDecodeTable ldpcCode =
-    let codingTableEntry = findLongCodingTableEntry ldpcCode
+    let codingTableEntry = findCodingTableEntry ldpcCode
     let nParityBits = codingTableEntry.NLdpc - codingTableEntry.KLdpc
     
     codingTableEntry.AccTable
