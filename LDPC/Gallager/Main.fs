@@ -1,6 +1,5 @@
 ﻿module Hamstr.Ldpc.Main
 
-open System
 open System.IO
 open System.Numerics
 open FSharp.Numerics
@@ -28,7 +27,6 @@ let readSymbol reader modulation =
     |> demodulateSymbol noiseVariance modulation
 
 let readFrame fileType frameType modcod reader =
-    let frameLength = frameType |> FrameType.BitLength
     let codingTableEntry = findCodingTableEntry (frameType, modcod.LdpcRate)
     let nDataBits = codingTableEntry.KLdpc
     let nParityBits = codingTableEntry.NLdpc - nDataBits
