@@ -1,6 +1,5 @@
 module Hamstr.Ldpc.DvbS2
 
-open System
 open System.Numerics
 open FSharp.Numerics
 open Hamstr.Ldpc.DvbS2Tables
@@ -31,18 +30,23 @@ let (|LongFrame|MediumFrame|ShortFrame|Invalid|) (frame : FECFRAME) =
 
 /// Coding parameters, as per secion 5.3, tables 5
 type CodingTableEntry = {
-    KBch : int      // BCH Uncoded block kBch
-    KLdpc : int     // BCH coded block nBch, LDPC Uncoded Block kLdpc
-    BchTError : int // BCH t-error correction
-    NLdpc : int     // LDPC Coded Block nLdpc
+    /// BCH Uncoded block kBch
+    KBch : int      
+    /// BCH coded block nBch, LDPC Uncoded Block kLdpc
+    KLdpc : int     
+    /// BCH t-error correction
+    BchTError : int 
+    /// LDPC Coded Block nLdpc
+    NLdpc : int     
+    /// Accumulator table
     AccTable : int list list
     q : int         
 }
 let longCodingTable = 
     [
-        // ( Rate_1_4, { KBch = 16008; KLdpc = 16200; BchTError = 12; NLdpc = 64800; q = 135; AccTable = ldpc_1_4N } )
-        // ( Rate_1_3, { KBch = 21408; KLdpc = 21600; BchTError = 12; NLdpc = 64800; q = 120; AccTable = ldpc_1_3N } )
-        // ( Rate_2_5, { KBch = 25728; KLdpc = 25920; BchTError = 12; NLdpc = 64800; q = 108; AccTable = ldpc_2_5N } )
+        ( Rate_1_4, { KBch = 16008; KLdpc = 16200; BchTError = 12; NLdpc = 64800; q = 135; AccTable = ldpc_1_4N } )
+        ( Rate_1_3, { KBch = 21408; KLdpc = 21600; BchTError = 12; NLdpc = 64800; q = 120; AccTable = ldpc_1_3N } )
+        ( Rate_2_5, { KBch = 25728; KLdpc = 25920; BchTError = 12; NLdpc = 64800; q = 108; AccTable = ldpc_2_5N } )
         ( Rate_1_2, { KBch = 32208; KLdpc = 32400; BchTError = 12; NLdpc = 64800; q = 90; AccTable = ldpc_1_2N } )
         // ( Rate_3_5, { KBch = 38688; KLdpc = 38880; BchTError = 12; NLdpc = 64800; q = 72; AccTable = ldpc_3_5N } )
         // ( Rate_2_3, { KBch = 43040; KLdpc = 43200; BchTError = 10; NLdpc = 64800; q = 60; AccTable = ldpc_2_3N } )

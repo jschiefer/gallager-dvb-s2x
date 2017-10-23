@@ -25,15 +25,14 @@ let demodulateSymbol (noiseVariance : float) (modulation : Modulation) (signal :
     // The one with the smallest error is our output symbol
     let symbol = errors |> Array.sortBy (fun (_, d) -> d) |> Array.head |> fst
     
-    /// "Exact" LLR as opposed to approximate LLR
-    let computeExactLlr n = 
-            
+    let computeLLR n = 
         // Extract bit number n from x (starting at 0)
         let extractBit (x : int) (n : int32) = 
             let mask = 1 <<< n
             byte (x  &&& mask) >>> n
 
-        // Add the gaussian of the error contributation, depending on whether bit n is in S0 or S1
+        // Add the gaussian of the error contribution, depending on whether bit n 
+        // is in S0 or S1
         let accumulateError (s0, s1) (n, (constellationPoint, (error : float))) = 
             let contribution = exp(-1.0 * error / noiseVariance)
             let constellationBit = extractBit constellationPoint n
@@ -47,5 +46,5 @@ let demodulateSymbol (noiseVariance : float) (modulation : Modulation) (signal :
             |> Seq.fold accumulateError  (0.0, 0.0)
         log(s0 / s1) |> LLR
 
-    [ (bitsPerSymbol modulation - 1) .. -1 .. 0 ] |> Seq.map computeExactLlr
+    [ (bitsPerSymbol modulation - 1) .. -1 .. 0 ] |> Seq.map computeLLR
 

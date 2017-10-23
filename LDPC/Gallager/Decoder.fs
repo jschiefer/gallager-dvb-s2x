@@ -2,7 +2,6 @@
 
 open FSharp.Numerics
 open Hamstr.Ldpc.DvbS2
-open Hamstr.Demod
 
 // Go through the whole table and add the info bit to the relevant acumulators.
 // Array index is the index of the parity bit, the contents are a list of 
@@ -31,10 +30,30 @@ let encode ldpcCode frame =
 
     parityBits
     
+// Compile the connections between data nodes and check nodes
+let makeDecodeTable ldpcCode =
+    let codingTableEntry = findLongCodingTableEntry ldpcCode
+    let nParityBits = codingTableEntry.NLdpc - codingTableEntry.KLdpc
+    
+    codingTableEntry.AccTable
+    // Iterate over the lines of the accumulator table
+    |> List.mapi (fun blockNo line ->
+        // Apply each line in the accumulator table to 360 bits
+        [0..359] 
+        |> List.map (fun blockOffset ->
+            let dataOffset = blockNo * 360 + blockOffset
+            line
+            |> List.map (fun accAddress -> 
+                // For each element in the accumulator line, modulo-2 add the data bit to the parity accumulator
+                let parityIndex = (accAddress + (dataOffset % 360) * codingTableEntry.q ) % nParityBits
+                (dataOffset, parityIndex))))
+        |> List.concat
+    |> List.concat
+
 
 /// LDPC-decode the frame (which is an array of tuples of bit and LLR)
 let decode ldpcCode frame =
-    let codingTableEntry = findLongCodingTableEntry ldpcCode
-
+    let decodeTable = makeDecodeTable ldpcCode
+    
 
     [ 0uy; 0uy ]
