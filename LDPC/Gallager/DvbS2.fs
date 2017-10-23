@@ -50,7 +50,7 @@ type CodingTableEntry = {
     q : int         
 }
 
-let longCodingTable = 
+let codingTable = 
     [
         ( (Long, Rate_1_4), { Std = DvbS2; KBch = 16008; KLdpc = 16200; BchTError = 12; NLdpc = 64800; q = 135; AccTable = ldpc_1_4N } )
         ( (Long, Rate_1_3), { Std = DvbS2; KBch = 21408; KLdpc = 21600; BchTError = 12; NLdpc = 64800; q = 120; AccTable = ldpc_1_3N } )
@@ -133,4 +133,4 @@ let ModCodLookup =
         ( 28uy, { Modulation = M_32APSK_4_12_16; LdpcRate = Rate_9_10 } );
     ] |> Map.ofList
 
-let findCodingTableEntry f = longCodingTable.[f]
+let findCodingTableEntry f = codingTable.[f]

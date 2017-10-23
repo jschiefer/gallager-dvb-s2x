@@ -31,29 +31,38 @@ let encode ldpcCode frame =
     parityBits
     
 // Compile the connections between data nodes and check nodes
-let makeDecodeTable ldpcCode =
-    let codingTableEntry = findCodingTableEntry ldpcCode
-    let nParityBits = codingTableEntry.NLdpc - codingTableEntry.KLdpc
+let makeDecodeTable typeAndCode =
+    let codingTableEntry = findCodingTableEntry typeAndCode
+    let nDataBits = codingTableEntry.KLdpc
+    let nParityBits = codingTableEntry.NLdpc - nDataBits
     
-    codingTableEntry.AccTable
-    // Iterate over the lines of the accumulator table
-    |> Array.mapi (fun blockNo line ->
-        // Apply each line in the accumulator table to 360 bits
-        [0..359] 
-        |> List.map (fun blockOffset ->
-            let dataOffset = blockNo * 360 + blockOffset
-            line
-            |> Array.map (fun accAddress -> 
-                // For each element in the accumulator line, modulo-2 add the data bit to the parity accumulator
-                let parityIndex = (accAddress + (dataOffset % 360) * codingTableEntry.q ) % nParityBits
-                (dataOffset, parityIndex))))
-        |> List.concat
-    |> Array.concat
+    let accumulatorLinks = 
+        codingTableEntry.AccTable
+        // Iterate over the lines of the accumulator table
+        |> Array.mapi (fun blockNo line ->
+            // Apply each line in the accumulator table to 360 bits
+            [0..359] 
+            |> List.map (fun blockOffset ->
+                let dataOffset = blockNo * 360 + blockOffset
+                line
+                |> Array.map (fun accAddress -> 
+                    // For each element in the accumulator line, modulo-2 add the data bit to the parity accumulator
+                    let parityIndex = (accAddress + (dataOffset % 360) * codingTableEntry.q ) % nParityBits
+                    (dataOffset, parityIndex))))
+            |> List.concat
+        |> Array.concat
 
+    // Treat parity bits as data. Kudos to g4guo for the insight!
+    let parityLinks = seq { for i in 0 .. nParityBits - 1 do yield (nDataBits + i, i)} |> Array.ofSeq
+
+    // This handles the final XOR during encoding
+    let xorLinks = seq { for i in 0 .. nParityBits - 2 do yield (nDataBits + i, i + 1)} |> Array.ofSeq
+
+    Array.concat [| accumulatorLinks; parityLinks; xorLinks |]
 
 /// LDPC-decode the frame (which is an array of tuples of bit and LLR)
-let decode ldpcCode frame =
-    let decodeTable = makeDecodeTable ldpcCode
+let decode typeAndCode frame =
+    let decodeTable = makeDecodeTable typeAndCode
     
 
     [ 0uy; 0uy ]
