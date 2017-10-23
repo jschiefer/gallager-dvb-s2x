@@ -19,12 +19,12 @@ let makeTables rate =
     let nCheckNodes = codingTableEntry.NLdpc - codingTableEntry.KLdpc
     let checkNodes = Array.create nCheckNodes ([] : int list)
     makeDecodeTable rate
-    |> List.iter (fun (b, c) -> 
+    |> Array.iter (fun (b, c) -> 
         bitNodes.[b] <- c :: bitNodes.[b]
         checkNodes.[c] <- b :: checkNodes.[c])
     (bitNodes, checkNodes)
 
-let (b, c) = makeTables Rate_1_4
+let (b, c) = makeTables Rate_1_2
 
 b |> Array.map (fun l -> l |> List.length) |> Array.groupBy id |> Array.map (fun (x, y) -> (x, y |> Array.length))
 c |> Array.map (fun l -> l |> List.length) |> Array.groupBy id |> Array.map (fun (x, y) -> (x, y |> Array.length))

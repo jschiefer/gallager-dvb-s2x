@@ -13,14 +13,14 @@ let encode ldpcCode frame =
     
     codingTableEntry.AccTable
     // Iterate over the lines of the accumulator table
-    |> List.iteri (fun blockNo line ->
+    |> Array.iteri (fun blockNo line ->
         // Apply each line in the accumulator table to 360 bits
         [0..359] 
         |> List.iter (fun blockOffset ->
             let dataOffset = blockNo * 360 + blockOffset
             let dataBit = frame.data.[dataOffset]
             line
-            |> List.iter (fun accAddress -> 
+            |> Array.iter (fun accAddress -> 
                 // For each element in the accumulator line, modulo-2 add the data bit to the parity accumulator
                 let parityIndex = (accAddress + (dataOffset % 360) * codingTableEntry.q ) % nParityBits
                 parityBits.[parityIndex] <- parityBits.[parityIndex] + dataBit)))
@@ -37,18 +37,18 @@ let makeDecodeTable ldpcCode =
     
     codingTableEntry.AccTable
     // Iterate over the lines of the accumulator table
-    |> List.mapi (fun blockNo line ->
+    |> Array.mapi (fun blockNo line ->
         // Apply each line in the accumulator table to 360 bits
         [0..359] 
         |> List.map (fun blockOffset ->
             let dataOffset = blockNo * 360 + blockOffset
             line
-            |> List.map (fun accAddress -> 
+            |> Array.map (fun accAddress -> 
                 // For each element in the accumulator line, modulo-2 add the data bit to the parity accumulator
                 let parityIndex = (accAddress + (dataOffset % 360) * codingTableEntry.q ) % nParityBits
                 (dataOffset, parityIndex))))
         |> List.concat
-    |> List.concat
+    |> Array.concat
 
 
 /// LDPC-decode the frame (which is an array of tuples of bit and LLR)
