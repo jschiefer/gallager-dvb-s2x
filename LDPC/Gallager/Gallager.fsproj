@@ -8,6 +8,7 @@
     <Compile Include="DvbS2Tables.fs" />
     <Compile Include="DvbS2.fs" />
     <Compile Include="Demod.fs" />
+    <Compile Include="Encoder.fs" />
     <Compile Include="Decoder.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>

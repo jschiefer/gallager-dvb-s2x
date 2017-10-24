@@ -3,38 +3,13 @@
 open FSharp.Numerics
 open Hamstr.Ldpc.DvbS2
 
-// Go through the whole table and add the info bit to the relevant acumulators.
-// Array index is the index of the parity bit, the contents are a list of 
-// all the data bits that go into that parity bit.
-let encode ldpcCode frame =
-    let codingTableEntry = findCodingTableEntry ldpcCode
-    let nParityBits = codingTableEntry.NLdpc - codingTableEntry.KLdpc
-    let parityBits = Array.create nParityBits LLR.Zero
-    
-    codingTableEntry.AccTable
-    // Iterate over the lines of the accumulator table
-    |> Array.iteri (fun blockNo line ->
-        // Apply each line in the accumulator table to 360 bits
-        [0..359] 
-        |> List.iter (fun blockOffset ->
-            let dataOffset = blockNo * 360 + blockOffset
-            let dataBit = frame.data.[dataOffset]
-            line
-            |> Array.iter (fun accAddress -> 
-                // For each element in the accumulator line, modulo-2 add the data bit to the parity accumulator
-                let parityIndex = (accAddress + (dataOffset % 360) * codingTableEntry.q ) % nParityBits
-                parityBits.[parityIndex] <- parityBits.[parityIndex] + dataBit)))
-    // Final step: Add the parity bits to each other
-    [1 .. nParityBits - 1]
-    |> List.iter (fun i -> parityBits.[i] <- parityBits.[i] + parityBits.[i - 1])
 
-    parityBits
-    
 // Compile the connections between data nodes and check nodes
-let makeDecodeTable typeAndCode =
+let makeDecodeTables typeAndCode =
     let codingTableEntry = findCodingTableEntry typeAndCode
     let nDataBits = codingTableEntry.KLdpc
-    let nParityBits = codingTableEntry.NLdpc - nDataBits
+    let nBitNodes = codingTableEntry.NLdpc
+    let nParityBits = nBitNodes - nDataBits
     
     let accumulatorLinks = 
         codingTableEntry.AccTable
@@ -58,11 +33,41 @@ let makeDecodeTable typeAndCode =
     // This handles the final XOR during encoding
     let xorLinks = seq { for i in 0 .. nParityBits - 2 do yield (nDataBits + i, i + 1)} |> Array.ofSeq
 
-    Array.concat [| accumulatorLinks; parityLinks; xorLinks |]
+    // Split up the linkage between bitNodes and checkNodes
+    let bitNodes = Array.create nBitNodes ([] : int list) 
+    let checkNodes = Array.create nParityBits ([] : int list)
+
+    [| accumulatorLinks; parityLinks; xorLinks |] 
+    |> Array.concat 
+    |> Array.iter (fun (b, c) -> 
+        bitNodes.[b] <- c :: bitNodes.[b]
+        checkNodes.[c] <- b :: checkNodes.[c])
+    (bitNodes, checkNodes)
 
 /// LDPC-decode the frame (which is an array of tuples of bit and LLR)
+type BitNode = {
+    /// List of indices of the associated checkNodes
+    checkNodes : int list;
+    /// Current sum of the modulo-2 additions
+    sum : LLR
+}
+
+type CheckNode = {
+    /// List of indices of the associated bitNodes
+    bitNodes : int list;
+    /// Current sum of the modulo-2 additions
+    sum : LLR
+}
+
 let decode typeAndCode frame =
-    let decodeTable = makeDecodeTable typeAndCode
-    
+    let processBitnodes frame = 
+        ()
+    let processCheckNodes frame = 
+        ()
+    let checkParityEquations frame = 
+        ()
+
+    let (bitNodes, checkNodes) = makeDecodeTables typeAndCode
+
 
     [ 0uy; 0uy ]

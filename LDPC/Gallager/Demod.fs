@@ -22,9 +22,6 @@ let demodulateSymbol (noiseVariance : float) (modulation : Modulation) (signal :
     let constellation = modulation |> getConstellation
     let errors = constellation |> Array.mapi (fun label point -> (label, magSquared point signal))
     
-    // The one with the smallest error is our output symbol
-    let symbol = errors |> Array.sortBy (fun (_, d) -> d) |> Array.head |> fst
-    
     let computeLLR n = 
         // Extract bit number n from x (starting at 0)
         let extractBit (x : int) (n : int32) = 
