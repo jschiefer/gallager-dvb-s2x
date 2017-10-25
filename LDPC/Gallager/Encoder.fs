@@ -15,7 +15,7 @@ let encode ldpcCode frame =
         [0..359] 
         |> List.iter (fun blockOffset ->
             let dataOffset = blockNo * 360 + blockOffset
-            let dataBit = frame.data.[dataOffset]
+            let dataBit = frame.bits.[dataOffset]
             line
             |> Array.iter (fun accAddress -> 
                 // For each element in the accumulator line, modulo-2 add the data bit to the parity accumulator

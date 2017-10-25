@@ -18,12 +18,11 @@ type FrameType =
 type FECFRAME = {
     frameType : FrameType
     ldpcCode : LdpcCode
-    data : array<LLR>
-    parity : array<LLR>
+    bits : array<LLR>
 }
 
 let (|LongFrame|MediumFrame|ShortFrame|Invalid|) (frame : FECFRAME) = 
-    match frame.data |> Seq.length with
+    match frame.bits |> Seq.length with
     | 16200 -> ShortFrame
     | 32400 -> MediumFrame
     | 64800 -> LongFrame

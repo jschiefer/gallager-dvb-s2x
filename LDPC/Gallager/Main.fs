@@ -5,7 +5,6 @@ open System.Numerics
 open FSharp.Numerics
 open Hamstr.Ldpc.DvbS2
 open Hamstr.Demod
-open Hamstr.Ldpc.Decoder
 
 type FileType = 
     | BitFile
@@ -28,29 +27,22 @@ let readSymbol reader modulation =
 
 let readFrame fileType frameType modcod reader =
     let codingTableEntry = findCodingTableEntry (frameType, modcod.LdpcRate)
-    let nDataBits = codingTableEntry.KLdpc
-    let nParityBits = codingTableEntry.NLdpc - nDataBits
+    let nBits = codingTableEntry.NLdpc
 
-    let (data, parity) = 
+    let data = 
         match fileType with
         | IqFile ->
             let bps  = bitsPerSymbol modcod.Modulation
             let data =
-                [ 1 .. nDataBits / bps ] 
+                [ 1 .. nBits / bps ] 
                 |> Seq.collect (fun _ -> readSymbol reader modcod.Modulation)
-            let parity = 
-                [ 1 .. nParityBits / bps ] 
-                |> Seq.collect (fun _ -> readSymbol reader modcod.Modulation)
-            data, parity
+            data
         | BitFile ->
             let data =
-                [ 1 .. nDataBits ] 
+                [ 1 .. nBits ] 
                 |> Seq.map (fun _ -> LLR.Create(reader.ReadByte()))
-            let parity =
-                [ 1 .. nParityBits ] 
-                |> Seq.map (fun _ -> LLR.Create(reader.ReadByte()))
-            data, parity
-    { frameType = frameType; ldpcCode = modcod.LdpcRate; data = Array.ofSeq data; parity = Array.ofSeq parity }
+            data
+    { frameType = frameType; ldpcCode = modcod.LdpcRate; bits = Array.ofSeq data }
 
 let readTestFile fileType fileName frameType modcod =
     use stream = File.OpenRead(fileName)
@@ -69,12 +61,14 @@ let printParity (refArray: LLR array) (otherArray : LLR array) =
         if a.ToBool = b.ToBool then () else printfn "Difference in element %A" i)
 
 [<EntryPoint>]
-let main argv =
-    let frameLength = Long |> FrameType.BitLength 
+let main _ =
     let modcod = ModCodLookup.[testPls]
     let frame = readTestFile IqFile iqDataFileName Long modcod
     let referenceFrame = readTestFile BitFile bitFileName Long modcod
 
-    let foo = decode (Long, modcod.LdpcRate) frame
+    printParity referenceFrame.bits frame.bits
+
+
+    // let foo = decode (Long, modcod.LdpcRate) frame
     
     0   

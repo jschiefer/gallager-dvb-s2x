@@ -6,6 +6,7 @@ open Hamstr.Ldpc.Decoder
 open Hamstr.Ldpc.Main
 
 let message = readTestFile IqFile iqDataFileName Long ModCodLookup.[04uy]
+message.bits |> Array.length
 
 let (b, c) = makeDecodeTables (Long, Rate_1_2)
 
