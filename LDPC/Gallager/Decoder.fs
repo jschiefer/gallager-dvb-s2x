@@ -22,16 +22,21 @@ let makeDecodeTables typeAndCode =
                 line
                 |> Array.map (fun accAddress -> 
                     // For each element in the accumulator line, modulo-2 add the data bit to the parity accumulator
-                    let parityIndex = (accAddress + (dataOffset % 360) * codingTableEntry.q ) % nParityBits
+                    let parityIndex = 
+                        (accAddress + (dataOffset % 360) * codingTableEntry.q ) % nParityBits
                     (dataOffset, parityIndex))))
             |> List.concat
         |> Array.concat
 
     // Treat parity bits as data. Kudos to g4guo for the insight!
-    let parityLinks = seq { for i in 0 .. nParityBits - 1 do yield (nDataBits + i, i)} |> Array.ofSeq
+    let parityLinks = 
+        seq { for i in 0 .. nParityBits - 1 do yield (nDataBits + i, nDataBits + i)} 
+        |> Array.ofSeq
 
     // This handles the final XOR during encoding
-    let xorLinks = seq { for i in 0 .. nParityBits - 2 do yield (nDataBits + i, i + 1)} |> Array.ofSeq
+    let xorLinks = 
+        seq { for i in 0 .. nParityBits - 2 do yield (nDataBits + i, nDataBits + i + 1)} 
+        |> Array.ofSeq
 
     // Split up the linkage between bitNodes and checkNodes
     let bitNodes = Array.create nBitNodes ([] : int list) 
@@ -47,20 +52,27 @@ let makeDecodeTables typeAndCode =
 /// LDPC-decode the frame (which is an array of tuples of bit and LLR)
 type BitNode = {
     /// List of indices of the associated checkNodes
-    checkNodes : int list;
+    checkNodes : int list
     /// Current sum of the modulo-2 additions
     sum : LLR
 }
 
 type CheckNode = {
     /// List of indices of the associated bitNodes
-    bitNodes : int list;
+    bitNodes : int list
     /// Current sum of the modulo-2 additions
     sum : LLR
 }
 
+type Foo = {
+    /// Index to BitNode or CheckNode
+    nodeId : int
+    llrContribution : LLR
+}
+
 let decode typeAndCode frame =
-    let processBitnodes frame = 
+    let processBitnodes frame bitnodes = 
+
         ()
     let processCheckNodes frame = 
         ()
