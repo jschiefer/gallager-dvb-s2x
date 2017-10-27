@@ -21,28 +21,22 @@ let makeDecodeTables typeAndCode =
                 let dataOffset = blockNo * 360 + blockOffset
                 line
                 |> Array.map (fun accAddress -> 
-                    // For each element in the accumulator line, modulo-2 add the data bit to the parity accumulator
+                    // Each element in the line, is a parity accumulator that this bit goes into 
                     let parityIndex = 
-                        (accAddress + (dataOffset % 360) * codingTableEntry.q ) % nParityBits
+                        (accAddress + (dataOffset % 360) * codingTableEntry.q) % nParityBits
                     (dataOffset, parityIndex))))
             |> List.concat
         |> Array.concat
 
-    // Treat parity bits as data. Kudos to g4guo for the insight!
-    let parityLinks = 
-        seq { for i in 0 .. nParityBits - 1 do yield (i + nDataBits, i)} 
-        |> Array.ofSeq
-
-    // This handles the final XOR during encoding
+    // Handle the final XOR in the encoding. Thank you to g4guo for the insight!
     let xorLinks = 
-        seq { for i in 0 .. nParityBits - 2 do yield (i, i + 1)} 
+        seq { for i in 1 .. nParityBits - 2 do yield (i + nDataBits, i - 1) }  
         |> Array.ofSeq
 
-    // Split up the linkage between bitNodes and checkNodes
+    // Create separate index lists for bitnodes and checknodes
     let bitNodes = Array.create nBitNodes ([] : int list) 
     let checkNodes = Array.create nParityBits ([] : int list)
-
-    [| accumulatorLinks; parityLinks; xorLinks |] 
+    [| accumulatorLinks; xorLinks |] 
     |> Array.concat 
     |> Array.iter (fun (b, c) -> 
         bitNodes.[b] <- c :: bitNodes.[b]
