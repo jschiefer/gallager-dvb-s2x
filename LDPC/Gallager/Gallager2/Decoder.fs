@@ -3,6 +3,32 @@
 open FSharp.Numerics
 open Hamstr.Ldpc.DvbS2
 
+type Contribution = {
+    /// Who contributed this
+    peerIndex : int
+    llr : LLR
+}
+
+/// LDPC-decode the frame (which is an array of tuples of bit and LLR)
+type BitNode = {
+    /// My bitnode index
+    index : int
+    /// List of indices of the associated checkNodes
+    checkNodes : int list
+    /// Current sum of the modulo-2 additions
+    value : LLR
+    // List of contributions from the peers
+    contributions : Contribution list
+}
+
+type CheckNode = {
+    /// My checknode index
+    index : int
+    /// List of indices of the associated bitNodes
+    bitNodes : int list
+    // List of contributions from the peers
+    contributions : Contribution list
+}
 
 // Compile the connections between data nodes and check nodes
 let makeDecodeTables typeAndCode =
@@ -34,35 +60,21 @@ let makeDecodeTables typeAndCode =
         |> Array.ofSeq
 
     // Create separate index lists for bitnodes and checknodes
-    let bitNodes = Array.create nBitNodes ([] : int list) 
-    let checkNodes = Array.create nParityBits ([] : int list)
+    let bitNodePeerLists = Array.create nBitNodes ([] : int list) 
+    let checkNodePeerLists = Array.create nParityBits ([] : int list)
+
     [| accumulatorLinks; xorLinks |] 
     |> Array.concat 
     |> Array.iter (fun (b, c) -> 
-        bitNodes.[b] <- c :: bitNodes.[b]
-        checkNodes.[c] <- b :: checkNodes.[c])
+        bitNodePeerLists.[b] <- c :: bitNodePeerLists.[b]
+        checkNodePeerLists.[c] <- b :: checkNodePeerLists.[c])
+
+    let bitNodes = bitNodePeerLists |> Array.mapi (fun i c -> 
+        { index = i; checkNodes = c; value = LLR.Undecided; contributions = [] })
+    let checkNodes = checkNodePeerLists |> Array.mapi (fun i b -> 
+        { index = i; bitNodes = b; contributions = [] })
+    
     (bitNodes, checkNodes)
-
-/// LDPC-decode the frame (which is an array of tuples of bit and LLR)
-type BitNode = {
-    /// List of indices of the associated checkNodes
-    checkNodes : int list
-    /// Current sum of the modulo-2 additions
-    sum : LLR
-}
-
-type CheckNode = {
-    /// List of indices of the associated bitNodes
-    bitNodes : int list
-    /// Current sum of the modulo-2 additions
-    sum : LLR
-}
-
-type Foo = {
-    /// Index to BitNode or CheckNode
-    nodeId : int
-    llrContribution : LLR
-}
 
 let decode typeAndCode frame =
     let processBitnodes frame bitnodes = 
