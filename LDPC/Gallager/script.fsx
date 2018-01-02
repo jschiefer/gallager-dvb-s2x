@@ -9,6 +9,6 @@ let iqDataFileName = "../Data/qpsk_testdata.out"
 let message = readTestFile IqFile iqDataFileName Long ModCodLookup.[04uy]
 let nBitnodes = 64800
 let nChecknodes = 32400
-let (bi, ci) = makeDecodeTables (Long, Rate_1_2)
+let frameType = (Long, Rate_1_2)
 
-
+let b = decode frameType message 

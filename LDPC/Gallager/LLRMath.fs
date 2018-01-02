@@ -26,7 +26,7 @@ namespace FSharp.Numerics
 type LLR = 
     | LLR of float
 
-    /// Create an LLR value from a boolean. Our conficence is infinite.
+    /// Create an LLR value from a boolean. Our confidence is infinite.
     static member Create(b : bool) = 
         match b with
         | true -> LLR(-infinity)

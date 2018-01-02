@@ -2,7 +2,7 @@ module Hamstr.Ldpc.DvbS2
 
 open System.Numerics
 open FSharp.Numerics
-open Hamstr.Ldpc.DvbS2Tables
+open DvbS2Tables
 
 type LdpcCode = 
     | Rate_1_4 | Rate_1_3 | Rate_2_5 | Rate_1_2 | Rate_3_5 | Rate_2_3 

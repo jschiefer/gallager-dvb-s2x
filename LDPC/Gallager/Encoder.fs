@@ -1,7 +1,7 @@
 module Hamstr.Ldpc.Encoder
 
 open FSharp.Numerics
-open Hamstr.Ldpc.DvbS2
+open DvbS2
 
 let encode ldpcCode frame =
     let codingTableEntry = findCodingTableEntry ldpcCode

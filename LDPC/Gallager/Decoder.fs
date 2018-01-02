@@ -1,7 +1,7 @@
 ﻿module Hamstr.Ldpc.Decoder
 
 open FSharp.Numerics
-open Hamstr.Ldpc.DvbS2
+open DvbS2
 
 type Contribution = {
     /// Who contributed this
@@ -136,4 +136,5 @@ let decode typeAndCode frame =
     let (blankBitnodes, checkNodes) = makeDecodeTables typeAndCode
     let bitnodes = initializeBitNodes frame blankBitnodes
 
-    ()
+    bitnodes
+    
