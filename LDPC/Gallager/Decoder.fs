@@ -85,7 +85,7 @@ let decode typeAndCode frame =
                 { b with value = frame.bits.[b.index] })
 
     // Update checknodes by adding contributions from all the connected bit nodes
-    let updateCheckNodes (checknodes : CheckNode[]) (bitnodes : BitNode[]) = 
+    let updateCheckNodes (bitnodes : BitNode[]) (checknodes : CheckNode[]) = 
         checknodes
         |> Array.map (fun c ->
             let contris = 
@@ -122,7 +122,7 @@ let decode typeAndCode frame =
 
     // Check parity equations: The sum of all the bitnodes adjacent to a 
     // checknode must be 0.
-    let checkParityEquations (checknodes : CheckNode []) (bitnodes : BitNode []) =
+    let checkParityEquations (bitnodes : BitNode []) (checknodes : CheckNode []) =
         let nonzeros = 
             checknodes
             |> Array.map (fun c -> 
@@ -135,6 +135,8 @@ let decode typeAndCode frame =
 
     let (blankBitnodes, checkNodes) = makeDecodeTables typeAndCode
     let bitnodes = initializeBitNodes frame blankBitnodes
+    let newChecknodes = updateCheckNodes bitnodes checkNodes 
+    let newBitnodes = updateBitnodes bitnodes newChecknodes
 
-    bitnodes
+    newBitnodes
     
