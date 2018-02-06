@@ -55,6 +55,7 @@ let makeDecodeTables typeAndCode =
         |> Array.concat
 
     // Handle the final XOR in the encoding. Thank you to g4guo for the insight!
+    // [FIXME] This needs verification, as the offsets are very strange.
     let xorLinks = 
         seq { for i in 1 .. nParityBits - 2 do yield (i + nDataBits, i - 1) }  
         |> Array.ofSeq
