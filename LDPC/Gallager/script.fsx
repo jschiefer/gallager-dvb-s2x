@@ -70,7 +70,6 @@ let printBitNodes (bitnodes : BitNode[]) =
 let iqDataFileName = "../Data/qpsk_testdata.out"
 let frame = readTestFile IqFile iqDataFileName Long ModCodLookup.[04uy]
 let typeAndCode = (Long, Rate_1_2)
-
 let (blankBitnodes, checkNodes) = makeDecodeTables typeAndCode
 let bitnodes = initializeBitNodes frame blankBitnodes
 let newChecknodes = updateCheckNodes bitnodes checkNodes 
