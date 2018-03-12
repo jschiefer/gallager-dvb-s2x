@@ -1,4 +1,5 @@
-#r "bin/Debug/netcoreapp1.1/Gallager.dll"
+#I __SOURCE_DIRECTORY__
+#r "bin/Debug/net46/Gallagher.exe"
 
 open Hamstr.Ldpc.DvbS2
 open Hamstr.Ldpc.Decoder
@@ -20,12 +21,10 @@ let dec typeAndCode frame =
 
 let dec2 = dec (Long, Rate_1_2)
 
-let iqDataFileName = "../Data/qpsk_testdata.out"
+let iqDataFileName = @"C:\Users\jas\Develop\Github\p4g-toys\LDPC\Data\qpsk_testdata.out"
 let frame = readTestFile IqFile iqDataFileName Long ModCodLookup.[04uy]
 
-
 let b = frame |> dec2 
-
 
 let nParityBits = 8
 let nDataBits = 8
