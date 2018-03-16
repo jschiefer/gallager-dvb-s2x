@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/bin/Debug/netcoreapp2.0/Gallager.dll",
+            "program": "${workspaceFolder}/bin/Debug/netcoreapp1.1/Gallager.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",

@@ -1,5 +1,5 @@
 #I __SOURCE_DIRECTORY__
-#r "bin/Debug/net46/Gallagher.exe"
+#r "bin/Debug/netcoreapp1.1/Gallager.dll"
 
 open Hamstr.Ldpc.DvbS2
 open Hamstr.Ldpc.Decoder
