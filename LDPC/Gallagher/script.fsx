@@ -22,15 +22,28 @@ let dec typeAndCode frame =
 let dec2 = dec (Long, Rate_1_2)
 
 let iqDataFileName = @"C:\Users\jas\Develop\Github\p4g-toys\LDPC\Data\qpsk_testdata.out"
-let frame = readTestFile IqFile iqDataFileName Long ModCodLookup.[04uy]
+let iqFrame = readTestFile BitFile bitFileName Long ModCodLookup.[04uy]
+let foo = dec2 iqFrame
 
-let b = frame |> dec2 
+let checkParityEquations2 (bitnodes : BitNode []) (nDatabits : int) =
+    let parityEquation i = 
+        let paritybits =
+            bitnodes.[i].checkNodes
+            |> List.map (fun ci -> bitnodes.[ci + nDatabits] )
 
-let nParityBits = 8
-let nDataBits = 8
-let origXorLinks = 
-    seq { for i in 1 .. nParityBits - 2 do yield (i + nDataBits, i - 1) }  |> Array.ofSeq
+        bitnodes.[i] :: paritybits
+        |> List.map (fun b -> b.value.ToBool)
+        |> List.reduce (<>) 
 
-let betterXorLinks =
-    seq { for i in 0 .. nParityBits - 1 do yield (i + nDataBits, i) }  |> Array.ofSeq
+    [0..(nDatabits - 1)]
+    |> List.map parityEquation
 
+let bitFileName = @"C:\Users\jas\Develop\Github\p4g-toys\LDPC\Data\qpsk_testdata.bits"
+// Read the file
+let frame = readTestFile BitFile bitFileName Long ModCodLookup.[04uy]
+// Create the empty table structure that fits the modcod
+let (blankBitnodes, checkNodes) = makeDecodeTables (Long, Rate_1_2)
+// Fill in the bits from the message
+let bitnodes = initializeBitNodes frame blankBitnodes
+checkParityEquations2 bitnodes 32400 
+bitnodes |> Array.length
