@@ -1,6 +1,9 @@
 #I __SOURCE_DIRECTORY__
-#r "Gallager/bin/Debug/netstandard2.0/Gallager.dll"
-#r "/Library/Frameworks/Mono.framework/Versions/Current/lib/mono/4.7.1-api/Facades/netstandard.dll"
+// #r "Gallager/bin/Debug/netstandard2.0/Gallager.dll"
+// #r "/Library/Frameworks/Mono.framework/Versions/Current/lib/mono/4.7.1-api/Facades/netstandard.dll"
+
+#r "bin/Debug/netstandard2.0/Gallager.dll"
+#r "Kludge/netstandard.dll"
 
 open Hamstr.Ldpc.DvbS2
 open Hamstr.Ldpc.Decoder

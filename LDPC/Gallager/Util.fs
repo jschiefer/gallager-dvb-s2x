@@ -10,10 +10,6 @@ type FileType =
     | BitFile
     | IqFile
 
-let testPls = 04uy
-let iqDataFileName = "../Data/qpsk_testdata.out"
-let bitFileName = "../Data/qpsk_testdata.bits"
-
 let readComplexNumber (reader:BinaryReader) = 
     let real = reader.ReadSingle()
     let imaginary = reader.ReadSingle()
