@@ -25,29 +25,29 @@ namespace FSharp.Numerics
 
 type LLR = 
     | LLR of float
+    with
+        /// Create an LLR value from a boolean. Our confidence is infinite.
+        static member Create(b : bool) = 
+            match b with
+            | true -> LLR(-infinity)
+            | false -> LLR(infinity)
+        static member Create b = LLR.Create(b <> 0uy)
+        static member Create(f : float) = LLR f
+        static member Undecided = LLR 0.0
+        static member Zero = LLR.Create(false)
+        static member One = LLR.Create(true)
+        member x.ToFloat = let (LLR n) = x in n
+        member x.ToBool = x.ToFloat > 0.0
 
-    /// Create an LLR value from a boolean. Our confidence is infinite.
-    static member Create(b : bool) = 
-        match b with
-        | true -> LLR(-infinity)
-        | false -> LLR(infinity)
-    static member Create b = LLR.Create(b <> 0uy)
-    static member Create(f : float) = LLR f
-    static member Undecided = LLR 0.0
-    static member Zero = LLR.Create(false)
-    static member One = LLR.Create(true)
-    member x.ToFloat = let (LLR n) = x in n
-    member x.ToBool = x.ToFloat > 0.0
-
-    /// Addition - approximation.
-    static member (<+>) (a : LLR, b : LLR) = 
-        let (LLR a') = a
-        let (LLR b') = b
-        LLR.Create(float (sign a' * sign b') * (min (abs a') (abs b')))
-    
-    /// Addition - exact algorithm
-    static member (+) (a : LLR, b : LLR) =
-        let (LLR a') = a
-        let (LLR b') = b
-        let atanh x = (log(1.0 + x) - log(1.0 - x)) / 2.0
-        LLR.Create(2.0 * atanh(tanh(a' / 2.0) * tanh(b' / 2.0)))
+        /// Addition - approximation.
+        static member (<+>) (a : LLR, b : LLR) = 
+            let (LLR a') = a
+            let (LLR b') = b
+            LLR.Create(float (sign a' * sign b') * (min (abs a') (abs b')))
+        
+        /// Addition - exact algorithm
+        static member (+) (a : LLR, b : LLR) =
+            let (LLR a') = a
+            let (LLR b') = b
+            let atanh x = (log(1.0 + x) - log(1.0 - x)) / 2.0
+            LLR.Create(2.0 * atanh(tanh(a' / 2.0) * tanh(b' / 2.0)))

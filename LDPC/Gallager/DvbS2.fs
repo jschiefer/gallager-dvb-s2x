@@ -10,10 +10,6 @@ type LdpcCode =
 
 type FrameType =
     | Short | Medium | Long 
-    static member BitLength = function
-        | Short -> 16200
-        | Medium -> 32400
-        | Long -> 64800
 
 type FECFRAME = {
     frameType : FrameType
