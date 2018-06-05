@@ -1,0 +1,15 @@
+﻿open System
+open Hamstr.Ldpc.Util
+open Hamstr.Ldpc.DvbS2
+open Hamstr.Demod
+
+[<EntryPoint>]
+let main _ =
+    let modcod = ModCodLookup.[testPls]
+    let frame = readTestFile IqFile iqDataFileName Long modcod
+    let referenceFrame = readTestFile BitFile bitFileName Long modcod
+
+    printParity referenceFrame.bits frame.bits
+
+    // let foo = decode (Long, modcod.LdpcRate) frame
+    0

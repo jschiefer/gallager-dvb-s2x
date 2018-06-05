@@ -1,4 +1,4 @@
-﻿module Hamstr.Ldpc.Main
+﻿module Hamstr.Ldpc.Util
 
 open System.IO
 open System.Numerics
@@ -59,16 +59,3 @@ let printParity (refArray: LLR array) (otherArray : LLR array) =
     Array.zip refArray otherArray
     |> Array.iteri (fun i (a, b) -> 
         if a.ToBool = b.ToBool then () else printfn "Difference in element %A" i)
-
-[<EntryPoint>]
-let main _ =
-    let modcod = ModCodLookup.[testPls]
-    let frame = readTestFile IqFile iqDataFileName Long modcod
-    let referenceFrame = readTestFile BitFile bitFileName Long modcod
-
-    printParity referenceFrame.bits frame.bits
-
-
-    // let foo = decode (Long, modcod.LdpcRate) frame
-    
-    0   

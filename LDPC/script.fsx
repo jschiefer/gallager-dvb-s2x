@@ -1,9 +1,10 @@
 #I __SOURCE_DIRECTORY__
-#r "bin/Debug/netcoreapp1.1/Gallager.dll"
+#r "Gallager/bin/Debug/netstandard2.0/Gallager.dll"
+#r "/Library/Frameworks/Mono.framework/Versions/Current/lib/mono/4.7.1-api/Facades/netstandard.dll"
 
 open Hamstr.Ldpc.DvbS2
 open Hamstr.Ldpc.Decoder
-open Hamstr.Ldpc.Main
+open Hamstr.Ldpc.Util
 
 let printBitNodes (bitnodes : BitNode[]) =
     bitnodes
@@ -21,7 +22,8 @@ let dec typeAndCode frame =
 
 let dec2 = dec (Long, Rate_1_2)
 
-let iqDataFileName = @"C:\Users\jas\Develop\Github\p4g-toys\LDPC\Data\qpsk_testdata.out"
+let bitFileName = "./Data/qpsk_testdata.bits"
+
 let iqFrame = readTestFile BitFile bitFileName Long ModCodLookup.[04uy]
 let foo = dec2 iqFrame
 
@@ -38,7 +40,6 @@ let checkParityEquations2 (bitnodes : BitNode []) (nDatabits : int) =
     [0..(nDatabits - 1)]
     |> List.map parityEquation
 
-let bitFileName = @"C:\Users\jas\Develop\Github\p4g-toys\LDPC\Data\qpsk_testdata.bits"
 // Read the file
 let frame = readTestFile BitFile bitFileName Long ModCodLookup.[04uy]
 // Create the empty table structure that fits the modcod
