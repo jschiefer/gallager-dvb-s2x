@@ -1,9 +1,9 @@
 #I __SOURCE_DIRECTORY__
-// #r "Gallager/bin/Debug/netstandard2.0/Gallager.dll"
-// #r "/Library/Frameworks/Mono.framework/Versions/Current/lib/mono/4.7.1-api/Facades/netstandard.dll"
-
 #r "bin/Debug/netstandard2.0/Gallager.dll"
-#r "Kludge/netstandard.dll"
+#r "/usr/lib/mono/4.7.1-api/Facades/netstandard.dll"
+
+// #r "bin/Debug/netstandard2.0/Gallager.dll"
+// #r "Kludge/netstandard.dll"
 
 open Hamstr.Ldpc.DvbS2
 open Hamstr.Ldpc.Decoder
@@ -23,12 +23,12 @@ let dec typeAndCode frame =
     let hd = computeHardDecision newBitnodes
     checkParityEquations hd newChecknodes
 
-let dec2 = dec (Long, Rate_1_2)
+let decodeHalfRate = dec (Long, Rate_1_2)
 
 let bitFileName = "./Data/qpsk_testdata.bits"
 
 let iqFrame = readTestFile BitFile bitFileName Long ModCodLookup.[04uy]
-let foo = dec2 iqFrame
+let foo = decodeHalfRate iqFrame
 
 let checkParityEquations2 (bitnodes : BitNode []) (nDatabits : int) =
     let parityEquation i = 

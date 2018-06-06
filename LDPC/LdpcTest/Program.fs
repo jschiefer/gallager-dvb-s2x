@@ -1,5 +1,6 @@
 ﻿open Hamstr.Ldpc.Util
 open Hamstr.Ldpc.DvbS2
+open Hamstr.Ldpc.Decoder
 open System.IO
 
 let testPls = 04uy
@@ -17,5 +18,5 @@ let main _ =
 
     printParity referenceFrame.bits frame.bits
 
-    // let foo = decode (Long, modcod.LdpcRate) frame
+    let foo = decode (Long, modcod.LdpcRate) frame
     0

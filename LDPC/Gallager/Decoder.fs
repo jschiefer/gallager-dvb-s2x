@@ -47,7 +47,7 @@ let makeDecodeTables typeAndCode =
                 let dataOffset = blockNo * 360 + blockOffset
                 line
                 |> Array.map (fun accAddress -> 
-                    // Each element in the line, is a parity accumulator that this bit goes into 
+                    // Each element in the line is a parity accumulator that this bit goes into 
                     let parityIndex = 
                         (accAddress + (dataOffset % 360) * codingTableEntry.q) % nParityBits
                     (dataOffset, parityIndex))))
@@ -139,6 +139,10 @@ let decode typeAndCode frame =
     let bitnodes = initializeBitNodes frame blankBitnodes
     let newChecknodes = updateCheckNodes bitnodes checkNodes 
     let newBitnodes = updateBitnodes bitnodes newChecknodes
+    let hd = computeHardDecision newBitnodes
+
+    let result = checkParityEquations hd newChecknodes
+    printfn "Parity check returned %A" result
 
     newBitnodes
     
