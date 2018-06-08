@@ -51,7 +51,7 @@ let checkForBitErrors refSeq otherSeq =
     otherSeq 
     |> Seq.compareWith comparer refSeq
 
-let printParity (refArray: LLR array) (otherArray : LLR array) = 
+let compareArrays (refArray: LLR array) (otherArray : LLR array) = 
     Array.zip refArray otherArray
     |> Array.iteri (fun i (a, b) -> 
         if a.ToBool = b.ToBool then () else printfn "Difference in element %A" i)

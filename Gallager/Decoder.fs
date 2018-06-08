@@ -14,7 +14,7 @@ type BitNode = {
     /// My bitnode index
     index : int
     /// List of indices of the associated checkNodes
-    checkNodes : int list
+    checkNodeIds : int list
     /// Current sum of the modulo-2 additions
     value : LLR
     // List of contributions from the peers
@@ -71,7 +71,7 @@ let makeDecodeTables typeAndCode =
         checkNodePeerLists.[c] <- b :: checkNodePeerLists.[c])
 
     let bitNodes = bitNodePeerLists |> Array.mapi (fun i c -> 
-        { index = i; checkNodes = c; value = LLR.Undecided; contributions = [] })
+        { index = i; checkNodeIds = c; value = LLR.Undecided; contributions = [] })
     let checkNodes = checkNodePeerLists |> Array.mapi (fun i b -> 
         { index = i; bitNodes = b; contributions = [] })
     
@@ -101,15 +101,15 @@ let updateBitnodes (bitnodes : BitNode[]) (checknodes : CheckNode[]) =
         c.contributions
         |> List.filter (fun cont -> cont.peerIndex <> exclude) 
         |> List.map (fun cont -> cont.llr)
-        |> List.reduce (+) 
+        |> List.reduce (<+>) 
 
     bitnodes
-    |> Array.map (fun b ->
+    |> Array.iteri (fun i b ->
         let contris = 
-            b.checkNodes
-            |> List.map (fun i -> checknodes.[i]) 
-            |> List.map (fun c -> { peerIndex = c.index; llr = summarizeChecknode c b.index } )
-        { b with contributions = contris } )
+            b.checkNodeIds
+            |> List.map (fun cnid -> 
+                { peerIndex = checknodes.[cnid].index; llr = summarizeChecknode checknodes.[cnid] b.index } )
+        bitnodes.[i] <- { b with contributions = contris } )
 
 // Compute hard decision
 let computeHardDecision (bitnodes : BitNode []) =
@@ -118,7 +118,7 @@ let computeHardDecision (bitnodes : BitNode []) =
         let hardDecision = 
             b.contributions
             |> List.map (fun cont -> cont.llr)
-            |> List.reduce (+)
+            |> List.reduce (<+>)
         { b with value = hardDecision } )
 
 // Check parity equations: The sum of all the bitnodes adjacent to a 
@@ -134,15 +134,15 @@ let checkParityEquations (bitnodes : BitNode []) (checknodes : CheckNode []) =
         |> Array.length
     nonzeros = 0
 
-let decode typeAndCode frame =
+let decode typeAndCode frame iterations =
     let (blankBitnodes, checkNodes) = makeDecodeTables typeAndCode
     let bitnodes = initializeBitNodes frame blankBitnodes
     let newChecknodes = updateCheckNodes bitnodes checkNodes 
-    let newBitnodes = updateBitnodes bitnodes newChecknodes
-    let hd = computeHardDecision newBitnodes
+    updateBitnodes bitnodes newChecknodes
+    let hd = computeHardDecision bitnodes
 
     let result = checkParityEquations hd newChecknodes
     printfn "Parity check returned %A" result
 
-    newBitnodes
+    bitnodes
     

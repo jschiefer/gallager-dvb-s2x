@@ -20,10 +20,10 @@ let encode ldpcCode frame =
             |> Array.iter (fun accAddress -> 
                 // For each element in the accumulator line, modulo-2 add the data bit to the parity accumulator
                 let parityIndex = (accAddress + (dataOffset % 360) * codingTableEntry.q ) % nParityBits
-                parityBits.[parityIndex] <- parityBits.[parityIndex] + dataBit)))
+                parityBits.[parityIndex] <- parityBits.[parityIndex] <+> dataBit)))
     // Final step: Add the parity bits to each other
     [1 .. nParityBits - 1]
-    |> List.iter (fun i -> parityBits.[i] <- parityBits.[i] + parityBits.[i - 1])
+    |> List.iter (fun i -> parityBits.[i] <- parityBits.[i] <+> parityBits.[i - 1])
 
     parityBits
     

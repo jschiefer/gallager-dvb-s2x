@@ -39,14 +39,16 @@ type LLR =
         member x.ToFloat = let (LLR n) = x in n
         member x.ToBool = x.ToFloat > 0.0
 
+(*
         /// Addition - approximation.
         static member (<+>) (a : LLR, b : LLR) = 
             let (LLR a') = a
             let (LLR b') = b
             LLR.Create(float (sign a' * sign b') * (min (abs a') (abs b')))
-        
+*)
+
         /// Addition - exact algorithm
-        static member (+) (a : LLR, b : LLR) =
+        static member (<+>) (a : LLR, b : LLR) =
             let (LLR a') = a
             let (LLR b') = b
             let atanh x = (log(1.0 + x) - log(1.0 - x)) / 2.0
