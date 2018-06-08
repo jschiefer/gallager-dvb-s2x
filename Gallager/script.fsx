@@ -1,9 +1,6 @@
 #I __SOURCE_DIRECTORY__
-#r "bin/Debug/netstandard2.0/Gallager.dll"
-#r "/usr/lib/mono/4.7.1-api/Facades/netstandard.dll"
-
-// #r "bin/Debug/netstandard2.0/Gallager.dll"
-// #r "Kludge/netstandard.dll"
+#r "bin/Debug/net461/Gallager.dll"
+#r "Kludge/netstandard.dll"
 
 open Hamstr.Ldpc.DvbS2
 open Hamstr.Ldpc.Decoder
@@ -19,21 +16,20 @@ let dec typeAndCode frame =
     let (blankBitnodes, checkNodes) = makeDecodeTables typeAndCode
     let bitnodes = initializeBitNodes frame blankBitnodes
     let newChecknodes = updateCheckNodes bitnodes checkNodes 
-    let newBitnodes = updateBitnodes bitnodes newChecknodes
-    let hd = computeHardDecision newBitnodes
+    updateBitnodes bitnodes newChecknodes
+    let hd = computeHardDecision bitnodes
     checkParityEquations hd newChecknodes
 
 let decodeHalfRate = dec (Long, Rate_1_2)
 
-let bitFileName = "./Data/qpsk_testdata.bits"
-
+let bitFileName = @"C:\Users\jas\Develop\p4g\gallager-dvb-s2x\Data\qpsk_testdata.bits"
 let iqFrame = readTestFile BitFile bitFileName Long ModCodLookup.[04uy]
 let foo = decodeHalfRate iqFrame
 
 let checkParityEquations2 (bitnodes : BitNode []) (nDatabits : int) =
     let parityEquation i = 
         let paritybits =
-            bitnodes.[i].checkNodes
+            bitnodes.[i].checkNodeIds
             |> List.map (fun ci -> bitnodes.[ci + nDatabits] )
 
         bitnodes.[i] :: paritybits
