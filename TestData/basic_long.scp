@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Application Name="Keysight Signal Studio for Digital Video" Version="8.0.0.1">
+    <Framework SerializationVersion="1.0">
+        <CurrentSystem>
+            <Function>Playback</Function>
+            <Source_IntArb_HwSystem>
+                <Name>MyMxg</Name>
+                <SourceVisaResourceName>TCPIP0::192.168.2.4::INSTR</SourceVisaResourceName>
+            </Source_IntArb_HwSystem>
+        </CurrentSystem>
+        <CurrentComponent>
+            <SingleSetup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="DVBS2_Setup">
+                <SignalGeneratorNavigator>
+                    <TimeOutInMS>20000</TimeOutInMS>
+                    <InstrumentModelNumber>N5182A</InstrumentModelNumber>
+                    <Frequency>1243000000</Frequency>
+                    <Amplitude>-10</Amplitude>
+                    <SampleClock>2500000</SampleClock>
+                    <IQModulationAttenuation>9.78796997</IQModulationAttenuation>
+                    <ModulationFilterType>RootNyquist</ModulationFilterType>
+                    <ModulationFilterFactor>0.2</ModulationFilterFactor>
+                    <CarrierBandwidth>1500000</CarrierBandwidth>
+                    <NoiseBandwidth>1500000</NoiseBandwidth>
+                </SignalGeneratorNavigator>
+                <LicenseStates>
+                    <boolean>true</boolean>
+                    <boolean>true</boolean>
+                    <boolean>true</boolean>
+                    <boolean>true</boolean>
+                    <boolean>true</boolean>
+                    <boolean>true</boolean>
+                    <boolean>true</boolean>
+                    <boolean>true</boolean>
+                    <boolean>true</boolean>
+                    <boolean>true</boolean>
+                    <boolean>true</boolean>
+                    <boolean>true</boolean>
+                    <boolean>true</boolean>
+                    <boolean>true</boolean>
+                    <boolean>true</boolean>
+                </LicenseStates>
+                <WaveformSetup xsi:type="DVBS2_WaveformSetup">
+                    <Carrier>
+                        <Carrier xsi:type="DVBS2_Carrier">
+                            <Capability>Advanced</Capability>
+                            <SamplePoints>12514032</SamplePoints>
+                            <SupportedFileSize>5402744</SupportedFileSize>
+                            <UsefulBitRate>1613484.7665404724</UsefulBitRate>
+                            <Payload>
+                                <DataSourceType>Demo</DataSourceType>
+                                <FileWizard>
+                                    <FileName>C:\Program Files (x86)\Keysight\Signal Studio\Digital Video\Realtime\Applications\DigitalVideo\Payloads\DemoNTSC.ts</FileName>
+                                    <FileNames />
+                                    <TargetBitRate>3731999.9091245388</TargetBitRate>
+                                    <TargetFileSize>5399924</TargetFileSize>
+                                </FileWizard>
+                                <VideoType>Ntsc</VideoType>
+                                <FileSize>1009560</FileSize>
+                                <CurrentBitRate>1613484.7665404724</CurrentBitRate>
+                                <PlayTime>5.0056128</PlayTime>
+                            </Payload>
+                            <RollOffFactor>0.2</RollOffFactor>
+                            <SymbolRate>1250000</SymbolRate>
+                            <CodeRate>CodeRate2_3</CodeRate>
+                            <MultiPathChannel>
+                                <FadingPaths>
+                                    <FadingPath />
+                                    <FadingPath />
+                                    <FadingPath />
+                                    <FadingPath />
+                                    <FadingPath />
+                                    <FadingPath />
+                                    <FadingPath />
+                                    <FadingPath />
+                                    <FadingPath />
+                                    <FadingPath />
+                                    <FadingPath />
+                                    <FadingPath />
+                                    <FadingPath />
+                                    <FadingPath />
+                                    <FadingPath />
+                                    <FadingPath />
+                                    <FadingPath />
+                                    <FadingPath />
+                                    <FadingPath />
+                                    <FadingPath />
+                                </FadingPaths>
+                            </MultiPathChannel>
+                            <HPPayload>
+                                <FileWizard>
+                                    <FileNames />
+                                </FileWizard>
+                            </HPPayload>
+                        </Carrier>
+                    </Carrier>
+                    <WaveformLength>12514032</WaveformLength>
+                </WaveformSetup>
+            </SingleSetup>
+        </CurrentComponent>
+    </Framework>
+</Application>
