@@ -9,25 +9,24 @@ type Contribution = {
     llr : LLR
 }
 
-/// LDPC-decode the frame (which is an array of tuples of bit and LLR)
 type BitNode = {
     /// My bitnode index
     index : int
     /// List of indices of the associated checkNodes
-    checkNodeIds : int list
+    checkNodeIds : int array
     /// Current sum of the modulo-2 additions
     value : LLR
     // List of contributions from the peers
-    contributions : Contribution list
+    contributions : Contribution array
 }
 
 type CheckNode = {
-    /// My checknode index
+    // My checknode index
     index : int
-    /// List of indices of the associated bitNodes
-    bitNodes : int list
+    // List of indices of the associated bitNodes
+    bitNodes : int array
     // List of contributions from the peers
-    contributions : Contribution list
+    contributions : Contribution array
 }
 
 // Compile the connections between data nodes and check nodes
@@ -64,21 +63,26 @@ let makeDecodeTables typeAndCode =
     let bitNodePeerLists = Array.create nBitNodes ([] : int list) 
     let checkNodePeerLists = Array.create nParityBits ([] : int list)
 
-    [| accumulatorLinks; xorLinks |] 
+    let allLinks = [| accumulatorLinks; xorLinks |] 
+    
+    allLinks
     |> Array.concat 
     |> Array.iter (fun (b, c) -> 
         bitNodePeerLists.[b] <- c :: bitNodePeerLists.[b]
         checkNodePeerLists.[c] <- b :: checkNodePeerLists.[c])
 
-    let bitNodes = bitNodePeerLists |> Array.mapi (fun i c -> 
-        { index = i; checkNodeIds = c; value = LLR.Undecided; contributions = [] })
-    let checkNodes = checkNodePeerLists |> Array.mapi (fun i b -> 
-        { index = i; bitNodes = b; contributions = [] })
+    let bitNodes = 
+        bitNodePeerLists 
+        |> Array.mapi (fun i c -> 
+            { index = i; checkNodeIds = List.toArray c; value = LLR.Undecided; contributions = Array.empty })
+    let checkNodes = 
+        checkNodePeerLists 
+        |> Array.mapi (fun i b -> 
+            { index = i; bitNodes = List.toArray b; contributions = Array.empty })
     
     (bitNodes, checkNodes)
 
 
-// FIXME: Decoder will start here
 // Initialize bitnodes from message bits
 let initializeBitNodes (frame : FECFRAME) (bitnodes : BitNode []) = 
     bitnodes 
@@ -91,7 +95,7 @@ let updateCheckNodes (bitnodes : BitNode[]) (checknodes : CheckNode[]) =
     |> Array.map (fun c ->
         let contris = 
             c.bitNodes 
-            |> List.map (fun b -> 
+            |> Array.map (fun b -> 
                 { peerIndex = b; llr = bitnodes.[b].value })
         { c with contributions = contris } )
 
@@ -99,15 +103,15 @@ let updateCheckNodes (bitnodes : BitNode[]) (checknodes : CheckNode[]) =
 let updateBitnodes (bitnodes : BitNode[]) (checknodes : CheckNode[]) =
     let summarizeChecknode c exclude =
         c.contributions
-        |> List.filter (fun cont -> cont.peerIndex <> exclude) 
-        |> List.map (fun cont -> cont.llr)
-        |> List.reduce (<+>) 
+        |> Array.filter (fun cont -> cont.peerIndex <> exclude) 
+        |> Array.map (fun cont -> cont.llr)
+        |> Array.reduce (<+>) 
 
     bitnodes
     |> Array.iteri (fun i b ->
         let contris = 
             b.checkNodeIds
-            |> List.map (fun cnid -> 
+            |> Array.map (fun cnid -> 
                 { peerIndex = checknodes.[cnid].index; llr = summarizeChecknode checknodes.[cnid] b.index } )
         bitnodes.[i] <- { b with contributions = contris } )
 
@@ -117,8 +121,8 @@ let computeHardDecision (bitnodes : BitNode []) =
     |> Array.map (fun b -> 
         let hardDecision = 
             b.contributions
-            |> List.map (fun cont -> cont.llr)
-            |> List.reduce (<+>)
+            |> Array.map (fun cont -> cont.llr)
+            |> Array.reduce (<+>)
         { b with value = hardDecision } )
 
 // Check parity equations: The sum of all the bitnodes adjacent to a 
@@ -128,19 +132,18 @@ let checkParityEquations (bitnodes : BitNode []) (checknodes : CheckNode []) =
         checknodes
         |> Array.map (fun c -> 
             c.contributions
-            |> List.map (fun bi -> bitnodes.[bi.peerIndex].value.ToBool)
-            |> List.reduce (<>) ) 
+            |> Array.map (fun bi -> bitnodes.[bi.peerIndex].value.ToBool)
+            |> Array.reduce (<>) ) 
         |> Array.filter not
         |> Array.length
     nonzeros = 0
 
-let decode typeAndCode frame iterations =
+let decode typeAndCode iterations frame =
     let (blankBitnodes, checkNodes) = makeDecodeTables typeAndCode
     let bitnodes = initializeBitNodes frame blankBitnodes
     let newChecknodes = updateCheckNodes bitnodes checkNodes 
     updateBitnodes bitnodes newChecknodes
     let hd = computeHardDecision bitnodes
-
     let result = checkParityEquations hd newChecknodes
     printfn "Parity check returned %A" result
 

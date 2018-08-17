@@ -21,9 +21,9 @@ let main _ =
 
     // compareArrays referenceFrame.bits frame.bits
 
-    let f frame = decode (Long, modcod.LdpcRate) frame 1 |> ignore
+    let f frame = decode (Long, modcod.LdpcRate) 1 frame |> ignore
 
-    [0 .. 25] |> List.iter (fun _ -> f frame)
+    [0 .. 20] |> List.iter (fun _ -> f frame)
 
     // printfn "Press any key to terminate" 
     // Console.ReadKey() |> ignore
