@@ -43,25 +43,27 @@
                     <Carrier>
                         <Carrier xsi:type="DVBS2_Carrier">
                             <Capability>Advanced</Capability>
-                            <SamplePoints>12514032</SamplePoints>
+                            <SamplePoints>62570160</SamplePoints>
                             <SupportedFileSize>5402744</SupportedFileSize>
                             <UsefulBitRate>1613484.7665404724</UsefulBitRate>
                             <Payload>
-                                <DataSourceType>Demo</DataSourceType>
+                                <DataSourceType>Wizard</DataSourceType>
                                 <FileWizard>
-                                    <FileName>C:\Program Files (x86)\Keysight\Signal Studio\Digital Video\Realtime\Applications\DigitalVideo\Payloads\DemoNTSC.ts</FileName>
+                                    <FileName>C:\Users\jas\Develop\p4g\MoMahDu.ts</FileName>
                                     <FileNames />
-                                    <TargetBitRate>3731999.9091245388</TargetBitRate>
-                                    <TargetFileSize>5399924</TargetFileSize>
+                                    <TargetBitRate>1613484.7665404724</TargetBitRate>
+                                    <TargetFileSize>5047800</TargetFileSize>
                                 </FileWizard>
+                                <FileName>C:\Users\jas\Develop\p4g\egypt.ts</FileName>
                                 <VideoType>Ntsc</VideoType>
-                                <FileSize>1009560</FileSize>
+                                <FileSize>5047800</FileSize>
                                 <CurrentBitRate>1613484.7665404724</CurrentBitRate>
-                                <PlayTime>5.0056128</PlayTime>
+                                <PlayTime>25.028064</PlayTime>
                             </Payload>
                             <RollOffFactor>0.2</RollOffFactor>
                             <SymbolRate>1250000</SymbolRate>
                             <CodeRate>CodeRate2_3</CodeRate>
+                            <NumberOfLdpcBlocks>940</NumberOfLdpcBlocks>
                             <MultiPathChannel>
                                 <FadingPaths>
                                     <FadingPath />
@@ -93,7 +95,7 @@
                             </HPPayload>
                         </Carrier>
                     </Carrier>
-                    <WaveformLength>12514032</WaveformLength>
+                    <WaveformLength>62570160</WaveformLength>
                 </WaveformSetup>
             </SingleSetup>
         </CurrentComponent>
