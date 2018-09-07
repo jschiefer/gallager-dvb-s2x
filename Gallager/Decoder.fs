@@ -29,12 +29,16 @@ type CheckNode = {
     contributions : Contribution array
 }
 
-// Compile the connections between data nodes and check nodes
-let makeDecodeTables typeAndCode =
-    let codingTableEntry = findCodingTableEntry typeAndCode
-    let nDataBits = codingTableEntry.KLdpc
+let findSize codingTableEntry = 
     let nBitNodes = codingTableEntry.NLdpc
+    let nDataBits = codingTableEntry.KLdpc
     let nParityBits = nBitNodes - nDataBits
+    (nDataBits, nParityBits) 
+
+/// Compile the connections between data nodes and check nodes
+let makeDecodeTables frameType =
+    let codingTableEntry = findCodingTableEntry frameType
+    let (nDataBits, nParityBits) = findSize codingTableEntry
     
     let accumulatorLinks = 
         codingTableEntry.AccTable
@@ -53,17 +57,22 @@ let makeDecodeTables typeAndCode =
             |> List.concat
         |> Array.concat
 
-    // Handle the final XOR in the encoding. Thank you to g4guo for the insight!
-    // [FIXME] This needs verification, as the offsets are very strange.
+    // Connect the parity bits to the corresponding checknodes
+    let parityLinks =
+        seq { for i in 1 .. nParityBits - 1 do yield (i + nDataBits, i) }  
+        |> Array.ofSeq
+
+    // Handle the final XOR in the encoding. Thank you to g4guo for the discussions!
     let xorLinks = 
-        seq { for i in 0 .. nParityBits - 1 do yield (i + nDataBits, i) }  
+        seq { for i in 1 .. nParityBits - 1 do yield (i + nDataBits - 1, i) }  
         |> Array.ofSeq
 
     // Create separate index lists for bitnodes and checknodes
+    let nBitNodes = nDataBits + nParityBits
     let bitNodePeerLists = Array.create nBitNodes ([] : int list) 
     let checkNodePeerLists = Array.create nParityBits ([] : int list)
 
-    let allLinks = [| accumulatorLinks; xorLinks |] 
+    let allLinks = [| accumulatorLinks; parityLinks; xorLinks |] 
     
     allLinks
     |> Array.concat 
@@ -75,6 +84,7 @@ let makeDecodeTables typeAndCode =
         bitNodePeerLists 
         |> Array.mapi (fun i c -> 
             { index = i; checkNodeIds = List.toArray c; value = LLR.Undecided; contributions = Array.empty })
+
     let checkNodes = 
         checkNodePeerLists 
         |> Array.mapi (fun i b -> 
@@ -82,14 +92,24 @@ let makeDecodeTables typeAndCode =
     
     (bitNodes, checkNodes)
 
+/// Create the equivalent of Table I. in the Eroz paper. This is the number of bit nodes of various degrees, 
+/// and hopefully useful for troubleshooting.
+let createDegreeTable() =
+    let degreeTable (b : BitNode[]) =
+        b |> List.ofArray |> List.groupBy (fun b -> b.checkNodeIds.Length) |> List.map (fun (x, bs) -> (x, bs.Length))
 
-// Initialize bitnodes from message bits
+    [ Rate_1_4; Rate_1_3; Rate_1_2; Rate_3_5; Rate_2_3; Rate_3_4; Rate_4_5; Rate_5_6; Rate_8_9; Rate_9_10 ]
+    |> List.map (fun r -> { frameSize = Long; codeRate = r})
+    |> List.map (fun x -> (x.codeRate, makeDecodeTables x |> fst))
+    |> List.map (fun (rate, bitnodes) -> (rate, degreeTable bitnodes))
+
+/// Initialize bitnodes from message bits
 let initializeBitNodes (frame : FECFRAME) (bitnodes : BitNode []) = 
     bitnodes 
         |> Array.map (fun b -> 
             { b with value = frame.bits.[b.index] })
 
-// Update checknodes by adding contributions from all the connected bit nodes
+/// Update checknodes by adding contributions from all the connected bit nodes
 let updateCheckNodes (bitnodes : BitNode[]) (checknodes : CheckNode[]) = 
     checknodes
     |> Array.map (fun c ->
@@ -99,7 +119,7 @@ let updateCheckNodes (bitnodes : BitNode[]) (checknodes : CheckNode[]) =
                 { peerIndex = b; llr = bitnodes.[b].value })
         { c with contributions = contris } )
 
-// Update bitnodes by assembling contributions from connected checknodes
+/// Update bitnodes by assembling contributions from connected checknodes
 let updateBitnodes (bitnodes : BitNode[]) (checknodes : CheckNode[]) =
     let summarizeChecknode c exclude =
         c.contributions
@@ -115,7 +135,7 @@ let updateBitnodes (bitnodes : BitNode[]) (checknodes : CheckNode[]) =
                 { peerIndex = checknodes.[cnid].index; llr = summarizeChecknode checknodes.[cnid] b.index } )
         bitnodes.[i] <- { b with contributions = contris } )
 
-// Compute hard decision
+/// Compute hard decision
 let computeHardDecision (bitnodes : BitNode []) =
     bitnodes 
     |> Array.map (fun b -> 
@@ -125,9 +145,9 @@ let computeHardDecision (bitnodes : BitNode []) =
             |> Array.reduce (<+>)
         { b with value = hardDecision } )
 
-// Check parity equations: The sum of all the bitnodes adjacent to a 
-// checknode must be 0.
-let checkParityEquations (bitnodes : BitNode []) (checknodes : CheckNode []) =
+/// Check parity equations: The sum of all the bitnodes adjacent to a 
+/// checknode must be 0.
+let checkParityEquations2 (bitnodes : BitNode []) (checknodes : CheckNode []) =
     let nonzeros = 
         checknodes
         |> Array.map (fun c -> 
@@ -136,15 +156,26 @@ let checkParityEquations (bitnodes : BitNode []) (checknodes : CheckNode []) =
             |> Array.reduce (<>) ) 
         |> Array.filter not
         |> Array.length
-    nonzeros = 0
+    0 = nonzeros
 
-let decode typeAndCode iterations frame =
-    let (blankBitnodes, checkNodes) = makeDecodeTables typeAndCode
+let checkParityBool (frameType : FrameType) (bits : bool array) =
+    let codingTableEntry = findCodingTableEntry frameType
+    let (nDataBits, nParityBits) = findSize codingTableEntry
+    ()
+
+let checkParity (frame : FECFRAME) =
+    frame.bits
+    |> Array.map (fun b -> b.ToBool)
+    |> checkParityBool frame.frameType
+
+/// The main decoder
+let decode (frame : FECFRAME) iterations =
+    let (blankBitnodes, checkNodes) = makeDecodeTables frame.frameType
     let bitnodes = initializeBitNodes frame blankBitnodes
     let newChecknodes = updateCheckNodes bitnodes checkNodes 
     updateBitnodes bitnodes newChecknodes
     let hd = computeHardDecision bitnodes
-    let result = checkParityEquations hd newChecknodes
+    let result = checkParityEquations2 hd newChecknodes
     printfn "Parity check returned %A" result
 
     bitnodes

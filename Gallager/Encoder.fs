@@ -3,8 +3,8 @@ module Hamstr.Ldpc.Encoder
 open FSharp.Numerics
 open DvbS2
 
-let encode ldpcCode frame =
-    let codingTableEntry = findCodingTableEntry ldpcCode
+let encode frameType frame =
+    let codingTableEntry = findCodingTableEntry frameType
     let nParityBits = codingTableEntry.NLdpc - codingTableEntry.KLdpc
     let parityBits = Array.create nParityBits LLR.Zero
     

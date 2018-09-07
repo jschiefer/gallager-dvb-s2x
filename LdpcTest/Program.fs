@@ -4,8 +4,8 @@ open Hamstr.Ldpc.Decoder
 open System.IO
 open System
 
-let testPls = 04uy
 let dataDir = "../../../../"
+// let dataDir ="./"
 let iqDataFileName = dataDir + "Data/qpsk_testdata.out"
 let bitFileName = dataDir + "Data/qpsk_testdata.bits"
 
@@ -14,18 +14,24 @@ let main _ =
     let dir = Directory.GetCurrentDirectory()
     printfn "Starting program in %s" dir
 
-    let modcod = ModCodLookup.[testPls]
-    let frame = readTestFile IqFile iqDataFileName Long modcod
+    let frameType = { frameSize = Long; codeRate = Rate_1_2 }
+    let modulation = M_QPSK
 
-    // let referenceFrame = readTestFile BitFile bitFileName Long modcod
+    let iqFileType = IqFile(frameType, modulation)
+    let frame = readTestFile iqFileType iqDataFileName
 
-    // compareArrays referenceFrame.bits frame.bits
+    let referenceFileType = BytePerBit(frameType)
+    let referenceFrame = readTestFile referenceFileType bitFileName 
 
-    let f frame = decode (Long, modcod.LdpcRate) 1 frame |> ignore
+    compareArrays referenceFrame.bits frame.bits
 
-    [0 .. 20] |> List.iter (fun _ -> f frame)
+    // let f frame = decode frame 1 |> ignore
+    let a = checkParity frame
+    printfn "checkParityEquations returned %A" a
 
-    // printfn "Press any key to terminate" 
-    // Console.ReadKey() |> ignore
+    // [0 .. 0] |> List.iter (fun _ -> f frame)
+
+    printfn "Press any key to terminate" 
+    Console.ReadKey() |> ignore
 
     0
