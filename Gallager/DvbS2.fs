@@ -18,7 +18,7 @@ type FrameType = {
 
 type FECFRAME = {
     frameType : FrameType
-    bits : array<LLR>
+    bits : LLR[]
 }
 
 type Standard =
@@ -85,7 +85,7 @@ type Modulation =
 /// Constellation mapping for each type of modulation.
 /// They are in order, i.e. the index into the array is the value of the symbol.
 let getConstellation = function
-     | M_QPSK -> 
+    | M_QPSK -> 
         let s = 1.0 / sqrt(2.0) 
         [| Complex(s, s); Complex(s, -s); Complex(-s, s); Complex(-s, -s) |]
 

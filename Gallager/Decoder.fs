@@ -13,20 +13,20 @@ type BitNode = {
     /// My bitnode index
     index : int
     /// List of indices of the associated checkNodes
-    checkNodeIds : int array
+    checkNodeIds : int[]
     /// Current sum of the modulo-2 additions
     value : LLR
     // List of contributions from the peers
-    contributions : Contribution array
+    contributions : Contribution[]
 }
 
 type CheckNode = {
     // My checknode index
     index : int
     // List of indices of the associated bitNodes
-    bitNodes : int array
+    bitNodes : int[]
     // List of contributions from the peers
-    contributions : Contribution array
+    contributions : Contribution[]
 }
 
 let findSize codingTableEntry = 
@@ -50,9 +50,11 @@ let makeDecodeTables frameType =
                 let dataOffset = blockNo * 360 + blockOffset
                 line
                 |> Array.map (fun accAddress -> 
-                    // Each element in the line is a parity accumulator that this bit goes into 
+                    // Each element in the line is a parity accumulator that this 
+                    // bit goes into 
                     let parityIndex = 
-                        (accAddress + (dataOffset % 360) * codingTableEntry.q) % nParityBits
+                        (accAddress + (dataOffset % 360) * codingTableEntry.q) 
+                            % nParityBits
                     (dataOffset, parityIndex))))
             |> List.concat
         |> Array.concat
@@ -82,23 +84,32 @@ let makeDecodeTables frameType =
 
     let bitNodes = 
         bitNodePeerLists 
-        |> Array.mapi (fun i c -> 
-            { index = i; checkNodeIds = List.toArray c; value = LLR.Undecided; contributions = Array.empty })
+        |> Array.mapi (fun i c -> { 
+            index = i; 
+            checkNodeIds = List.toArray c; 
+            value = LLR.Undecided; 
+            contributions = Array.empty })
 
     let checkNodes = 
         checkNodePeerLists 
-        |> Array.mapi (fun i b -> 
-            { index = i; bitNodes = List.toArray b; contributions = Array.empty })
+        |> Array.mapi (fun i b -> { 
+            index = i; 
+            bitNodes = List.toArray b; 
+            contributions = Array.empty })
     
     (bitNodes, checkNodes)
 
-/// Create the equivalent of Table I. in the Eroz paper. This is the number of bit nodes of various degrees, 
-/// and hopefully useful for troubleshooting.
+/// Create the equivalent of Table I. in the Eroz paper. This is the number
+///  of bit nodes of various degrees, and hopefully useful for troubleshooting.
 let createDegreeTable() =
     let degreeTable (b : BitNode[]) =
-        b |> List.ofArray |> List.groupBy (fun b -> b.checkNodeIds.Length) |> List.map (fun (x, bs) -> (x, bs.Length))
+        b 
+        |> List.ofArray 
+        |> List.groupBy (fun b -> b.checkNodeIds.Length) 
+        |> List.map (fun (x, bs) -> (x, bs.Length))
 
-    [ Rate_1_4; Rate_1_3; Rate_1_2; Rate_3_5; Rate_2_3; Rate_3_4; Rate_4_5; Rate_5_6; Rate_8_9; Rate_9_10 ]
+    [ Rate_1_4; Rate_1_3; Rate_1_2; Rate_3_5; Rate_2_3; 
+      Rate_3_4; Rate_4_5; Rate_5_6; Rate_8_9; Rate_9_10 ]
     |> List.map (fun r -> { frameSize = Long; codeRate = r})
     |> List.map (fun x -> (x.codeRate, makeDecodeTables x |> fst))
     |> List.map (fun (rate, bitnodes) -> (rate, degreeTable bitnodes))
@@ -131,8 +142,9 @@ let updateBitnodes (bitnodes : BitNode[]) (checknodes : CheckNode[]) =
     |> Array.iteri (fun i b ->
         let contris = 
             b.checkNodeIds
-            |> Array.map (fun cnid -> 
-                { peerIndex = checknodes.[cnid].index; llr = summarizeChecknode checknodes.[cnid] b.index } )
+            |> Array.map (fun cnid -> { 
+                peerIndex = checknodes.[cnid].index; 
+                llr = summarizeChecknode checknodes.[cnid] b.index } )
         bitnodes.[i] <- { b with contributions = contris } )
 
 /// Compute hard decision
@@ -158,7 +170,7 @@ let checkParityEquations2 (bitnodes : BitNode []) (checknodes : CheckNode []) =
         |> Array.length
     0 = nonzeros
 
-let checkParityBool (frameType : FrameType) (bits : bool array) =
+let checkParityBool (frameType : FrameType) (bits : bool[]) =
     let codingTableEntry = findCodingTableEntry frameType
     let (nDataBits, nParityBits) = findSize codingTableEntry
     ()
