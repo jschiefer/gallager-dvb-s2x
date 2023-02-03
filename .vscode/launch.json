@@ -15,7 +15,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/LdpcTest/bin/Debug/netcoreapp2.1/LdpcTest.dll",
+            "program": "${workspaceFolder}/LdpcTest/bin/Debug/net6.0/LdpcTest.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",

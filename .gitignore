@@ -3,3 +3,4 @@ Gallager.sln.DotSettings.user
 .ionide/
 bin/
 obj/
+.fake
