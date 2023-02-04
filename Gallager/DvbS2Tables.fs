@@ -1,6 +1,6 @@
 module Hamstr.Ldpc.DvbS2Tables
 
-// These are the parity but accumulation tables from section B of 
+// These are the parity bit accumulation tables from section B of 
 // the standards. 
 
 /// Parity bit accumulator table, 1/4 rate, long frames
