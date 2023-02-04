@@ -1,6 +1,5 @@
 #I __SOURCE_DIRECTORY__
-#r "bin/Debug/netstandard2.0/Gallager.dll"
-#r "Kludge/netstandard.dll"
+#r "bin/Debug/net6.0/Gallager.dll"
 
 open Hamstr.Ldpc.DvbS2
 open Hamstr.Ldpc.Decoder
