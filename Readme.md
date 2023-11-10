@@ -11,6 +11,6 @@ The code in this repository implements the LDPC codes for the DVB-S2 and DVB-S2x
 purpose of this is to provide a starting point to understand the algorithms and issues, in the hope of furthering
 the cause of an Open Source implementation of a ground station for satellite ham radio use.
 
-This code has been developed using .Net Core (currently net6.0), mostly on Linux. The choice of implementation
+This code has been developed using .Net Core (currently net7.0), mostly on Linux. The choice of implementation
 language was driven by the desire to take advantage of the exceptional clarity and brevity of F#. Similar results could 
 be expected with other OCaml-derived languages.
